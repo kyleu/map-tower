@@ -20,8 +20,8 @@ object Sandbox extends Controller {
   var bounds = new Bounds(new Point(-84.39074993133545, 33.75963771197399), new Point(-84.38045024871826, 33.76275954956179))
 
   private val mongoDb = MongoConnection()("maptower")
-  private def queryNodesNear(p: Point) = Obj("loc" -> Obj("$near" -> Array(p.x, p.y)))
-  private def queryNodesWithin(b: Bounds) = Obj("loc" -> Obj("$within" -> Obj("$box" -> Array(Array(b.ul.x, b.ul.y), Array(b.br.x, b.br.y)))))
+  private def queryNodesNear(p: Point) = Obj("loc" -> Obj("$near" -> Array(p.lng, p.lat)))
+  private def queryNodesWithin(b: Bounds) = Obj("loc" -> Obj("$within" -> Obj("$box" -> Array(Array(b.ul.lng, b.ul.lat), Array(b.br.lng, b.br.lat)))))
 
   def mapTest = Action {
     val nodes = mongoDb("node").find(queryNodesWithin(bounds))

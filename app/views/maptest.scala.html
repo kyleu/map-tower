@@ -1,0 +1,13 @@
+@(center:map.Point, points:Iterator[map.Point], debugInfo:String = "")
+
+@headerContent() = {
+    <script type="text/javascript">
+      window.startPoint = [-84.3856, 33.7612];
+    </script>
+    <script src="@routes.Assets.at("javascripts/maptower.js")" type="text/javascript"></script>
+}
+
+@main("MapTower Test", headerContent) {
+    <div id="map"></div>
+    <div class="debugInfo>@debugInfo</div>
+}
