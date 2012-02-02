@@ -1,4 +1,8 @@
 db.node.find({"tags.k":"highway"}).count()
-db.node.find({"loc":{ $near : [-123.111,44.122] }}).limit(10)
+db.node.find({"loc":{ $near : [-84.3856, 33.7612] }}).limit(10)
 db.way.find().count()
-db.node.find({"loc" : {"$within" : {"$box" : [[40.73083, -73.99756], [40.741404,  -73.988135]]}}})
+db.node.find({"loc" : {"$within" : {"$box" : [[33.76275954956179, -84.39074993133545], [33.75963771197399, -84.38045024871826]]}}})
+db.setProfilingLevel(2);
+
+
+

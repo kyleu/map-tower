@@ -1,7 +1,6 @@
 package data;
 
-import com.mongodb.casbah.MongoConnection
-import com.mongodb.casbah.commons.MongoDBObject
+import com.mongodb.casbah.Imports._
 
 object DataManager {
   def wipe(db: String) {
