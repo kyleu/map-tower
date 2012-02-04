@@ -5,8 +5,8 @@ import com.mongodb.{ BasicDBList, BasicDBObject }
 import com.mongodb.casbah.Imports._
 import play.api.libs.json._
 
-object Point {
-  val empty = new Point(0, 0)
+object Way {
+  val empty = new Way(0, 0)
 
   def apply() = empty
 
@@ -16,7 +16,7 @@ object Point {
   }
 }
 
-case class Point(x: Double, y: Double, tags: Map[String, String] = Map.empty) {
+case class Way(x: Double, y: Double, tags: Map[String, String] = Map.empty) {
   def lat = y
   def lng = x
 }

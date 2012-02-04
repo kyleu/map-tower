@@ -6,7 +6,7 @@ import java.io.File
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.casbah.Imports._
 
-object Importer {
+object OsmImporter {
   def apply(db: String, filename: String) {
     val src = Source.fromFile(new File(filename))
     val er = new XMLEventReader(src)

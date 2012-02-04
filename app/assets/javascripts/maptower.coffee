@@ -12,7 +12,7 @@ wayIcon = new CustomIcon '/assets/images/map/way.png'
 map = null
 
 onMapClick = (e) ->
-  latlngStr = 'lat:' + e.latlng.lat.toFixed(4) + '<br/>lng:' + e.latlng.lng.toFixed(4)
+  latlngStr = 'lat: ' + e.latlng.lat.toFixed(4) + '<br/>lng: ' + e.latlng.lng.toFixed(4)
   popup = new L.Popup()
   popup.setLatLng(e.latlng)
   popup.setContent(latlngStr)
@@ -24,7 +24,6 @@ $ ->
 
   map = new L.Map('map', { attributionControl: false })
   
-  renderMarkers(map.getBounds)
   
   styleId = 998
   tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/' + styleId + '/256/{z}/{x}/{y}.png'
@@ -33,7 +32,9 @@ $ ->
     maxZoom : 18,
     attribution : attrib
   })
-  map.setView(center, 18).addLayer(cloudmadeLayer)
+  map.setView(center, 18)
+  renderMarkers(map.getBounds())
+  map.addLayer(cloudmadeLayer)
 
   loadTestData(center)
   undefined
@@ -41,15 +42,14 @@ $ ->
 renderMarker = (p) ->
   marker = new L.Marker(new L.LatLng(p.x, p.y), {icon: if p.tags.size then pointTagsIcon else pointIcon})
   map.addLayer(marker)
-  message = "lat:#{p.y}<br/>lng:#{p.x}<br/><br/>\n<strong>Node</strong><br/>\n"
-  console.log(p)
+  message = "lat: #{p.y}<br/>lng: #{p.x}<br/><br/>\n<strong>Node</strong><br/>\n"
   tagMessages = for k, v of p.tags 
     "#{k}: #{v}"
   message += tagMessages.join("<br/>\n")  
   marker.bindPopup(message)
 
 renderMarkers = (b) ->
-  $.getJSON('/sandbox/pathTest', (points) -> $.each(points, (i) -> renderMarker(points[i])))
+  $.getJSON('/sandbox/pathTest', {ul:0, ur:0, br:0, bl:0}, (points) -> $.each(points, (i) -> renderMarker(points[i])))
   undefined
 
 loadTestData = (center) ->

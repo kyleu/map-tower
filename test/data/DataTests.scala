@@ -8,7 +8,7 @@ class DataTests {
   @Test
   def xmlLoad {
     DataManager.wipe("maptower")
-    Importer("maptower", "data/atlanta.osm")
+    OsmImporter("maptower", "data/atlanta.osm")
     DataManager.index("maptower")
   }
 

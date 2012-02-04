@@ -1,5 +1,6 @@
 package data;
 
+import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.casbah.Imports._
 
 object DataManager {
@@ -22,6 +23,13 @@ object DataManager {
     mongoDb("relation").createIndex(MongoDBObject("tags.k" -> 1))
     mongoDb("relation").createIndex(MongoDBObject("members.type" -> 1))
     mongoDb("relation").createIndex(MongoDBObject("members.ref" -> 1))
+  }
+
+  def normalize(db: String) {
+    val mongoDb = getConn(db)
+    val nodeColl = mongoDb("node")
+    val wayColl = mongoDb("way")
+    val relationColl = mongoDb("node")
   }
 
   def getConn(db: String) = {

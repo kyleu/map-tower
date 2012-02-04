@@ -25,13 +25,13 @@ object Sandbox extends Controller {
 
   def mapTest = Action {
     val nodes = mongoDb("node").find(queryNodesWithin(bounds))
-    val points = for (node <- nodes) yield Point.apply(node)
+    val points = for (node <- nodes) yield Point(node)
     Ok(views.html.maptest(center, points))
   }
 
   def pathTest = Action {
     val nodes = mongoDb("node").find(queryNodesWithin(bounds))
-    val points = for (node <- nodes) yield Point.apply(node)
+    val points = for (node <- nodes) yield Point(node)
     Ok(generate(points)).as("application/json")
   }
 }
