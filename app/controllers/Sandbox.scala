@@ -3,9 +3,11 @@ package controllers
 import java.util.Date
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj }
-import map.osm.{ Point, Bounds }
+import map.{ Point, Bounds }
+import map.osm.Node
 import play.api._
 import play.api.mvc._
+import controllers.forms._
 
 import com.codahale.jerkson.Json._
 
@@ -16,22 +18,24 @@ object Sandbox extends Controller {
     Ok("OK")
   }
 
-  private val center = new Point(-84.3856, 33.7612, Map("a" -> "x", "b" -> "y"))
-  var bounds = new Bounds(new Point(-84.39074993133545, 33.75963771197399), new Point(-84.38045024871826, 33.76275954956179))
+  private val center = new Point(-84.3856, 33.7612)
 
   private val mongoDb = MongoConnection()("maptower")
-  private def queryNodesNear(p: Point) = Obj("loc" -> Obj("$near" -> Array(p.lng, p.lat)))
-  private def queryNodesWithin(b: Bounds) = Obj("loc" -> Obj("$within" -> Obj("$box" -> Array(Array(b.ul.lng, b.ul.lat), Array(b.br.lng, b.br.lat)))))
+  private def queryNodesNear(p: Point) = Obj("loc" -> Obj("$near" -> Array(p.x, p.y)))
+  private def queryNodesWithin(b: Bounds) = Obj("loc" -> Obj("$within" -> Obj("$box" -> Array(Array(b.ul.x, b.ul.y), Array(b.br.x, b.br.y)))))
 
   def mapTest = Action {
-    val nodes = mongoDb("node").find(queryNodesWithin(bounds))
-    val points = for (node <- nodes) yield Point(node)
-    Ok(views.html.maptest(center, points))
+    Ok(views.html.maptest(center))
   }
 
-  def pathTest = Action {
-    val nodes = mongoDb("node").find(queryNodesWithin(bounds))
-    val points = for (node <- nodes) yield Point(node)
-    Ok(generate(points)).as("application/json")
+  def pathTest() = Action { implicit request =>
+    val bounds = Forms.bounds.bindFromRequest.get
+
+    //val bounds = new Bounds(new Point(-84.39074993133545, 33.75963771197399), new Point(-84.38045024871826, 33.76275954956179))
+    println(" --- " + bounds)
+
+    val nodeObjs = mongoDb("node").find(queryNodesWithin(bounds))
+    val nodes = for (nodeObj <- nodeObjs) yield Node(nodeObj)
+    Ok(generate(nodes)).as("application/json")
   }
 }

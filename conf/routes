@@ -7,6 +7,7 @@ GET     /                           controllers.HomePage.index
 GET     /sandbox/rebuildDatastore   controllers.Sandbox.rebuildDatastore
 GET     /sandbox/mapTest            controllers.Sandbox.mapTest
 GET     /sandbox/pathTest           controllers.Sandbox.pathTest
+POST    /sandbox/pathTest           controllers.Sandbox.pathTest
 
 GET     /admin                      controllers.Default.todo
 

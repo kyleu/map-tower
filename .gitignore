@@ -1,5 +1,6 @@
 project/target/
 tmp/
+bin/
 target/
 logs/
 repository/
