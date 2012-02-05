@@ -3,7 +3,7 @@ package controllers
 import java.util.Date
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj }
-import map.{ Point, Bounds }
+import map.osm.{ Point, Bounds }
 import play.api._
 import play.api.mvc._
 

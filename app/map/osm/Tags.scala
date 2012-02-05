@@ -1,4 +1,4 @@
-package map
+package map.osm
 
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.{ BasicDBList, BasicDBObject }

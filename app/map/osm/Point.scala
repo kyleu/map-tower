@@ -1,9 +1,8 @@
-package map
+package map.osm
 
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.{ BasicDBList, BasicDBObject }
 import com.mongodb.casbah.Imports._
-import play.api.libs.json._
 
 object Point {
   val empty = new Point(0, 0)

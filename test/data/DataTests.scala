@@ -5,13 +5,17 @@ import org.junit.Assert._
 import com.mongodb.casbah.Imports._
 
 class DataTests {
+  val dbName = "test"
+
   @Test
   def xmlLoad {
-    DataManager.wipe("maptower")
-    OsmImporter("maptower", "data/atlanta.osm")
-    DataManager.index("maptower")
+    DataManager.wipe(dbName)
+    OsmImporter(dbName, "data/eugene.osm")
+    DataManager.index(dbName)
   }
 
   @Test
-  def mondoPersist {}
+  def pointPersist {
+
+  }
 }
