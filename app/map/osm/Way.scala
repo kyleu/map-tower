@@ -9,10 +9,10 @@ object Way {
 
   def apply() = empty
 
-  def apply(way: Obj): Way = {
-    val refs: ObjList = way.as[BasicDBList]("ref")
-    val refIds = refs.map(_.asInstanceOf[Double].toInt)
-    new Way(refIds, Tags.load(way))
+  def apply(obj: Obj): Way = {
+    val nodeIds: ObjList = obj.as[BasicDBList]("nodes")
+    val nodeOsmIds = nodeIds.map(_.asInstanceOf[Int])
+    new Way(nodeOsmIds, Tags.load(obj))
   }
 }
 

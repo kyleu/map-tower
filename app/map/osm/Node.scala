@@ -6,14 +6,12 @@ import com.mongodb.casbah.Imports._
 import map.Point
 
 object Node {
-  val empty = new Node(new Point(0, 0))
-
-  def apply(x: Double, y: Double) = new Node(new Point(x, y))
+  val empty = new Node(0, new Point(0, 0))
 
   def apply(obj: Obj): Node = {
     var loc = obj.as[BasicDBList]("loc")
-    new Node(Point(loc), Tags.load(obj))
+    new Node(obj.as[Int]("osmid"), Point(loc), Tags.load(obj))
   }
 }
 
-case class Node(loc: Point, tags: Map[String, String] = Map())
+case class Node(osmId: Int, loc: Point, tags: Map[String, String] = Map())

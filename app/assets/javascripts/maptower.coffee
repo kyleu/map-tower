@@ -16,14 +16,24 @@ mapNetwork = null
 # Handles server communication
 class MapNetwork
   constructor: () ->
-    
-  updateNodes: (b) =>
+  
+  nodeCache = {}
+  wayCache = {}
+  
+  update: (b) =>
     ul = b.getNorthWest()
     br = b.getSouthEast()
     params = {"ul.x": ul.lng, "ul.y": ul.lat, "br.x": br.lng, "br.y": br.lat}
-    callback = (nodes) -> 
-      $.each(nodes, (i) -> mapView.renderNode(nodes[i]))
-    $.post('/sandbox/pathTest', params, callback, "json")
+    callback = (rsp) -> 
+      $.each(rsp.nodes, (i) ->
+        node = rsp.nodes[i]
+        if nodeCache[node.osmid]
+          console.log("Cached node!")
+          return
+        mapView.renderNode(node))
+      $.each(rsp.ways, (i) -> 
+        mapView.renderWay(rsp.ways[i]))
+    $.get('/sandbox/pathTest', params, callback, "json")
     undefined
 
   loadTestData: (center) =>
@@ -61,14 +71,13 @@ class MapView
     @map = new L.Map('map', { attributionControl: false })
     @map.setView(center, 17)
     @map.on('click', @onMapClick)
-    @map.on('zoomend', @onMapZoom)
+    # @map.on('zoomend', @onMapZoom)
 
   addTileLayer: () =>
     styleId = 998
     tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/' + styleId + '/256/{z}/{x}/{y}.png'
     tileLayer = new L.TileLayer(tileUrl, {
       maxZoom : 18,
-      attribution : ""
     })
     @map.addLayer(tileLayer)
 
@@ -81,7 +90,7 @@ class MapView
     undefined
 
   onMapZoom: (e) => 
-    renderNodes(@map.getBounds())
+    mapNetwork.update(@map.getBounds())
 
   renderNode: (p) =>
     tagMessages = for k, v of p.tags 
@@ -94,12 +103,14 @@ class MapView
       marker.bindPopup(message)
     undefined
 
+  renderWay: (p) =>
+
 $ -> 
   center = new L.LatLng(33.7612, -84.3856)
 
   mapView = new MapView("map", center, 17)
   mapNetwork = new MapNetwork()
-  mapNetwork.updateNodes(mapView.map.getBounds())
+  mapNetwork.update(mapView.map.getBounds())
 
   mapView.addTileLayer()
 
