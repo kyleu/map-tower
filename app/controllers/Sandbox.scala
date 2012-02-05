@@ -5,6 +5,7 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import map.{ Point, Bounds }
 import map.osm._
+import data.{ DataManager, OsmImporter }
 import play.api._
 import play.api.mvc._
 import controllers.forms._
@@ -13,8 +14,13 @@ import com.codahale.jerkson.Json._
 
 object Sandbox extends Controller {
   def rebuildDatastore = Action {
-    models.DatabaseBuilder.wipe
-    models.DatabaseBuilder.create
+    // models.DatabaseBuilder.wipe
+    // models.DatabaseBuilder.create
+    var dbName = "maptower"
+    DataManager.wipe(dbName)
+    OsmImporter(dbName, "data/atlanta.osm")
+    DataManager.index(dbName)
+
     Ok("OK")
   }
 

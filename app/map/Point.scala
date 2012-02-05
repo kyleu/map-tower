@@ -1,13 +1,11 @@
 package map
 
-import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
-import com.mongodb.{ BasicDBList, BasicDBObject }
-import com.mongodb.casbah.Imports._
+import com.mongodb.BasicDBList
 
 object Point {
-  def empty = new Point(0, 0)
+  val empty = new Point(0, 0)
   def apply(objList: BasicDBList): Point = {
-    new Point(objList.get(1).asInstanceOf[Double], objList.get(0).asInstanceOf[Double])
+    new Point(objList.get(0).asInstanceOf[Double], objList.get(1).asInstanceOf[Double])
   }
 }
 
