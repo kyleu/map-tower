@@ -72,8 +72,9 @@ class MapView
     @map.on('zoomend', @onMapZoom)
 
   addTileLayer: () =>
-    styleId = 998
-    tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/' + styleId + '/256/{z}/{x}/{y}.png'
+    
+    tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/998/256/{z}/{x}/{y}.png'
+    # tileUrl = '/tiles/{z}/{x}/{y}'
     tileLayer = new L.TileLayer(tileUrl, {
       maxZoom : 18,
     })

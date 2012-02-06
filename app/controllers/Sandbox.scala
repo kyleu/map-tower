@@ -1,6 +1,5 @@
 package controllers
 
-import java.util.Date
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import map.{ Point, Bounds }
