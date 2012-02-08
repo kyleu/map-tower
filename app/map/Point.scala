@@ -12,5 +12,5 @@ object Point {
 case class Point(x: Double, y: Double) {
   def lng = x
   def lat = y
-  override def toString = "[%d, %d]" format (x, y)
+  override def toString = "[%f, %f]" format (x, y)
 }

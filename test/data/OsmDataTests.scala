@@ -9,9 +9,9 @@ class OsmDataTests {
 
   @Test
   def xmlLoad {
-    DataManager.wipe(dbName)
-    OsmImporter(dbName, "data/eugene.osm")
-    DataManager.index(dbName)
+    //    DataManager.wipe(dbName)
+    //    OsmImporter(dbName, "data/eugene.osm")
+    //    DataManager.index(dbName)
     DataManager.normalize(dbName)
   }
 }
