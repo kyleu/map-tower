@@ -39,7 +39,7 @@ object DataManager {
   }
 
   private def convert(osmNode: OsmNode) = {
-    var name = osmNode.tags.getOrElse("name", "Unknown")
+    var name = osmNode.tags("name")
     new Node(osmNode.osmId, name, osmNode.loc, osmNode.tags)
   }
 
