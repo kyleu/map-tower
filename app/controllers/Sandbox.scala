@@ -37,13 +37,13 @@ object Sandbox extends Controller {
   def pathTest() = Action { implicit request =>
     val bounds = Forms.bounds.bindFromRequest.get
 
-    val nodes = mongoDb("node") find (queryNodesWithin(bounds)) map (OsmNode(_))
+    val nodes = mongoDb("node") find (queryNodesWithin(bounds)) map (OsmNode(_)) toArray
 
     val ways = mongoDb("way") find (queryWaysByNodeOsmIds(nodes.map(_.osmId) toArray)) map (OsmWay(_))
 
-    val relations = mongoDb("relation").find() map (OsmRelation(_))
+    val relations = mongoDb("relation").find().limit(10) map (OsmRelation(_))
 
-    val rsp = Map("nodes" -> nodes, "ways" -> ways, "relations" -> relations)
-    Ok(generate(rsp)).as("application/json")
+    val rsp = generate(Map("nodes" -> nodes, "ways" -> ways, "relations" -> relations))
+    Ok(rsp).as("application/json")
   }
 }
