@@ -29,7 +29,7 @@ object DataManager {
     val mongoDb = getConn(db)
     val nodeColl = mongoDb("node")
     val wayColl = mongoDb("way")
-    val relationColl = mongoDb("node")
+    val relationColl = mongoDb("relation")
   }
 
   def getConn(db: String) = {

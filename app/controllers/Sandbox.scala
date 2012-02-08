@@ -1,7 +1,7 @@
 package controllers
 
 import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
+import com.mongodb.casbah.commons.{ MongoDBObject => Obj }
 import map.{ Point, Bounds }
 import map.osm._
 import data.{ DataManager, OsmImporter }
@@ -36,17 +36,14 @@ object Sandbox extends Controller {
 
   def pathTest() = Action { implicit request =>
     val bounds = Forms.bounds.bindFromRequest.get
-    //val bounds = new Bounds(new Point(-84.39074993133545, 33.75963771197399), new Point(-84.38045024871826, 33.76275954956179))
 
-    val nodeObjs = mongoDb("node").find(queryNodesWithin(bounds)).toArray
-    val nodes = for (nodeObj <- nodeObjs) yield {
-      Node(nodeObj)
-    }
+    val nodes = mongoDb("node") find (queryNodesWithin(bounds)) map (OsmNode(_))
 
-    val nodeOsmIds = nodes.map(_.osmId)
-    val wayObjs = mongoDb("way").find(queryWaysByNodeOsmIds(nodeOsmIds.toArray))
-    val ways = for (wayObj <- wayObjs) yield Way(wayObj)
+    val ways = mongoDb("way") find (queryWaysByNodeOsmIds(nodes.map(_.osmId) toArray)) map (OsmWay(_))
 
-    Ok(generate(Map("nodes" -> nodes, "ways" -> ways))).as("application/json")
+    val relations = mongoDb("relation").find() map (OsmRelation(_))
+
+    val rsp = Map("nodes" -> nodes, "ways" -> ways, "relations" -> relations)
+    Ok(generate(rsp)).as("application/json")
   }
 }

@@ -4,7 +4,7 @@ import org.junit.Test
 import org.junit.Assert._
 import com.mongodb.casbah.Imports._
 
-class DataTests {
+class OsmDataTests {
   val dbName = "test"
 
   @Test
@@ -12,10 +12,6 @@ class DataTests {
     DataManager.wipe(dbName)
     OsmImporter(dbName, "data/eugene.osm")
     DataManager.index(dbName)
-  }
-
-  @Test
-  def pointPersist {
-
+    DataManager.normalize(dbName)
   }
 }

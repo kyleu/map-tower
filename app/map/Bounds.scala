@@ -1,3 +1,7 @@
 package map
 
-case class Bounds(ul: Point, br: Point)
+case class Bounds(ul: Point, br: Point) {
+  def contains(p: Point) = {
+    false
+  }
+}

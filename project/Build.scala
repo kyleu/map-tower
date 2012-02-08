@@ -13,7 +13,8 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
     "org.scalaquery" % "scalaquery_2.9.0-1" % "0.9.5",
-    "com.mongodb.casbah" %% "casbah" % "2.1.5-1")
+    "com.mongodb.casbah" %% "casbah" % "2.1.5-1",
+    "org.scala-tools.testing" %% "scalacheck" % "1.9")
 
   println("Reloadinating!")
 
