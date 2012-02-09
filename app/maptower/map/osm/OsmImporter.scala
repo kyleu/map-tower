@@ -1,17 +1,17 @@
-package data
+package maptower.map.osm
 
 import scala.xml.pull._
 import scala.io.Source
 import java.io.File
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.casbah.Imports._
+import maptower.data.OsmDao
 
 object OsmImporter {
-  def apply(db: String, filename: String) {
+  def apply(osmDao: OsmDao, filename: String) {
     val src = Source.fromFile(new File(filename))
     val er = new XMLEventReader(src)
 
-    val mongoDb = DataManager.getConn(db)
     var numRecordsProcessed = 0;
 
     var current = Obj.newBuilder
@@ -19,14 +19,13 @@ object OsmImporter {
     var otherColl = ObjList.newBuilder
 
     while (er.hasNext) {
-      val e = er.next
-      e match {
+      er.next match {
         case comment: EvComment => println(comment.text)
         case elem: EvElemStart => {
           val attrs = elem.attrs.asAttrMap
           if (elem.label == "node" || elem.label == "way" || elem.label == "relation") {
             current = Obj.newBuilder
-            current += ("osmid" -> attrs("id").toInt)
+            current += ("osmId" -> attrs("id").toInt)
           }
           elem.label match {
             case "node" => current += ("loc" -> ObjList(attrs("lon").toFloat, attrs("lat").toFloat))
@@ -63,7 +62,7 @@ object OsmImporter {
             numRecordsProcessed += 1
             current += "tags" -> tags.result
             tags = ObjList.newBuilder
-            mongoDb(elem.label).insert(current.result)
+            osmDao.mongoDb("osm" + elem.label).insert(current.result)
           }
         }
         case _ =>

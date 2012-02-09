@@ -4,7 +4,7 @@ import play.api.data._
 import play.api.data.format.Formatter
 import play.api.data.format.Formats.stringFormat
 import play.api.data.Forms._
-import map.Point
+import maptower.map.Point
 
 package object forms {
   def geoCoordFormat = new Formatter[Double] {

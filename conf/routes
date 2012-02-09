@@ -4,10 +4,16 @@
 
 # Home page
 GET     /                           controllers.HomePage.index
-GET     /sandbox/rebuildDatastore   controllers.Sandbox.rebuildDatastore
+
+GET     /sandbox/rebuildMaps        controllers.Sandbox.rebuildMaps
+GET     /sandbox/rebuildOsm         controllers.Sandbox.rebuildOsm
 GET     /sandbox/mapTest            controllers.Sandbox.mapTest
-GET     /sandbox/pathTest           controllers.Sandbox.pathTest
-POST    /sandbox/pathTest           controllers.Sandbox.pathTest
+
+GET     /sandbox/test/osm           controllers.Sandbox.osmDataTest
+POST    /sandbox/test/osm           controllers.Sandbox.osmDataTest
+
+GET     /sandbox/test/data          controllers.Sandbox.dataTest
+POST    /sandbox/test/data          controllers.Sandbox.dataTest
 
 GET     /tiles/:z/:x/:y             controllers.Tiles.get(z:Int, x:Int, y:Int)
 

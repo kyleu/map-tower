@@ -1,4 +1,4 @@
-package map
+package maptower.map
 
 import org.junit.Test
 import org.junit.Assert._

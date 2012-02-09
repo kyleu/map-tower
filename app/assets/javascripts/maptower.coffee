@@ -60,7 +60,7 @@ MapNetwork =
         mapView.renderNode(node))
       $.each(rsp.ways, (i) -> 
         mapView.renderWay(rsp.ways[i]))
-    $.get('/sandbox/pathTest', params, callback, "json")
+    $.get('/sandbox/test/data', params, callback, "json")
     undefined
 
 # Contains all Leaflet interactions, caches map data
@@ -90,13 +90,13 @@ class MapView
   onMapZoom: (e) => 
     # MapNetwork.update(@map.getBounds())
 
-  renderNode: (p) =>
-    tagMessages = for k, v of p.tags 
+  renderNode: (n) =>
+    tagMessages = for k, v of n.tags 
       "#{k}: #{v}"
     if (tagMessages.length > 0)
-      marker = new L.Marker(new L.LatLng(p.loc.y, p.loc.x), {icon: if p.tags.size then pointTagsIcon else pointIcon})
+      marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (n.tags.size % 2 == 0) then pointTagsIcon else pointIcon})
       @map.addLayer(marker)
-      message = "lat: #{p.loc.y}<br/>lng: #{p.loc.x}<br/><br/>\n<strong>Node</strong><br/>\n"
+      message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>#{n.typ}<br/>\n"
       message += tagMessages.join("<br/>\n")  
       marker.bindPopup(message)
     undefined

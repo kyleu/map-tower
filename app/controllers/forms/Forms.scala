@@ -2,7 +2,7 @@ package controllers.forms
 
 import play.api.data._
 import play.api.data.Forms._
-import map.Bounds
+import maptower.map.Bounds
 
 object Forms {
   val bounds = Form(

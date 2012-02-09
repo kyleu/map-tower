@@ -1,6 +1,7 @@
-package map
+package maptower.map
 
 import com.mongodb.BasicDBList
+import com.mongodb.casbah.commons.MongoDBList
 
 object Point {
   val empty = new Point(0, 0)
@@ -12,5 +13,6 @@ object Point {
 case class Point(x: Double, y: Double) {
   def lng = x
   def lat = y
+  def toObj = MongoDBList(x, y)
   override def toString = "[%f, %f]" format (x, y)
 }
