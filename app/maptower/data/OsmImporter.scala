@@ -1,14 +1,14 @@
-package maptower.map.osm
+package maptower.data
 
 import scala.xml.pull._
 import scala.io.Source
 import java.io.File
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.casbah.Imports._
-import maptower.data.OsmDao
+import maptower.map.osm._
 
 object OsmImporter {
-  def apply(osmDao: OsmDao, filename: String) {
+  def load(osmDao: OsmDao, filename: String) {
     val src = Source.fromFile(new File(filename))
     val er = new XMLEventReader(src)
 
@@ -68,5 +68,43 @@ object OsmImporter {
         case _ =>
       }
     }
+  }
+
+  def convert(osmDao: OsmDao, mapDao: MapDao) {
+    val osmNodes = osmDao.mongoDb("osmnode").find(Obj("tags.k" -> "name")) map (OsmNode(_))
+    val nodes = osmNodes map { _.asNode }
+
+    val nodeCollection = mapDao.mongoDb("node")
+    nodeCollection.drop
+    var nodeCount = 0
+    for (node <- nodes) {
+      if (node.category == "unknown") {
+        println(node)
+      } else {
+        nodeCollection.insert(node.toObj)
+        nodeCount += 1
+      }
+    }
+    println("Inserted %s nodes." format nodeCount)
+
+    val wayCollection = mapDao.mongoDb("way")
+    var wayCount = 0
+    val osmWays = osmDao.mongoDb("osmway") find () map (OsmWay(_))
+    val ways = osmWays map { osmWay =>
+      val referencedPoints = osmDao.getNodes(osmWay.nodeIds).toSeq
+      val way = osmWay.asWay(referencedPoints)
+      wayCount += 1
+      way
+    }
+    for (way <- ways) { wayCollection.insert(way.toObj) }
+    println("Inserted %s ways." format wayCount)
+
+    var relationCount = 0
+    val osmRelations = osmDao.mongoDb("osmrelation") find () map (OsmRelation(_))
+    for (relation <- osmRelations) {
+      relationCount += 1
+      println(relation.members.size, relation.tags)
+    }
+    println("Processed %s relations." format relationCount)
   }
 }

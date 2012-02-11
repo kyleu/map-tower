@@ -1,11 +1,10 @@
 package controllers
 
-import maptower.map._
-import maptower.map.osm._
 import play.api._
 import play.api.mvc._
 import controllers.forms._
-import maptower.data.MongoClient
+import maptower.data.{ MongoClient, OsmImporter }
+import maptower.map.Point
 
 import com.codahale.jerkson.Json._
 
@@ -14,14 +13,14 @@ object Sandbox extends Controller with MongoClient {
 
   def rebuildMaps = Action {
     mapDao.wipe
-    mapDao.loadOsm(osmDao)
+    OsmImporter.convert(osmDao, mapDao)
     mapDao.index
     Ok("OK")
   }
 
   def rebuildOsm = Action {
     osmDao.wipe
-    OsmImporter(osmDao, "data/atlanta.osm")
+    OsmImporter.load(osmDao, "data/atlanta.osm")
     osmDao.index
     Ok("OK")
   }

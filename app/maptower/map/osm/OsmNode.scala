@@ -10,19 +10,13 @@ object OsmNode {
 
   def apply(obj: Obj): OsmNode = {
     var loc = obj.as[BasicDBList]("loc")
-    new OsmNode(obj.as[Int]("osmId"), Point(loc), Tags.load(obj))
+    new OsmNode(obj.as[Int]("osmId"), Point(loc), Tags(obj))
   }
 
-  private val categoryPrefixes = "amenity,shop,man_made,tourism,highway,place,aeroway,railway,natural,building,leisure,landuse,waterway,historic,sport,".split(",")
+  private val categoryPrefixes = "shop,man_made,tourism,highway,place,aeroway,railway,natural,building,leisure,landuse,waterway,historic,sport,amenity".split(",")
 }
 
 case class OsmNode(osmId: Int, loc: Point, tags: Map[String, String] = Map()) extends Tags {
-  def category = tags.foldLeft(("unknown", "unknown")) { (l, r) =>
-    r match {
-      case (k, v) if (OsmNode.categoryPrefixes.contains(k)) => (k, v)
-      case (_, _) => l
-    }
-  }
-
-  def asNode = new Node(osmId, tags.get("name").get, category._1 + ":" + category._2, loc, trimmedTags(OsmNode.categoryPrefixes))
+  lazy val category = matchFirst(OsmNode.categoryPrefixes)
+  def asNode = new Node(osmId, tags.get("name").get, category._1, category._2, loc, trimmedTags(OsmNode.categoryPrefixes))
 }

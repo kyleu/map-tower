@@ -13,8 +13,10 @@ object OsmWay {
   def apply(obj: Obj) = {
     val nodeRefs: ObjList = obj.as[BasicDBList]("nodes")
     val nodeIds = nodeRefs.map(_.asInstanceOf[Int])
-    new OsmWay(obj.as[Int]("osmId"), nodeIds, Tags.load(obj))
+    new OsmWay(obj.as[Int]("osmId"), nodeIds, Tags(obj))
   }
+
+  private val categoryPrefixes = "".split(",")
 }
 
 case class OsmWay(osmId: Int, nodeIds: Seq[Int], tags: Map[String, String] = Map.empty) extends Tags {
@@ -23,6 +25,8 @@ case class OsmWay(osmId: Int, nodeIds: Seq[Int], tags: Map[String, String] = Map
     val nodeMap = nodes.toMap
     val points = nodeIds flatMap (id => nodeMap.get(id))
 
-    new Way(osmId, tags.get("name").getOrElse("Unknown"), "typ", points, trimmedTags(Array()))
+    lazy val category = matchFirst(OsmWay.categoryPrefixes)
+
+    new Way(osmId, tags.get("name").getOrElse("Unknown"), category._1, category._2, points, trimmedTags(OsmWay.categoryPrefixes))
   }
 }
