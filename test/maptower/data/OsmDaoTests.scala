@@ -10,11 +10,12 @@ class OsmDataTests extends MongoClient {
 
   @Test
   def xmlLoad {
-    osmDao.wipe
-    OsmImporter(osmDao, "data/eugene.osm")
-    osmDao.index
-
-    mapDao.wipe
-    mapDao.loadOsm(osmDao)
+    //    osmDao.wipe
+    //    OsmImporter(osmDao, "data/eugene.osm")
+    //    osmDao.index
+    //
+    //    mapDao.wipe
+    //    mapDao.loadOsm(osmDao)
+    //    mapDao.index
   }
 }

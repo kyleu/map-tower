@@ -25,7 +25,7 @@ class MapDao(val dbName: String) extends BaseDao {
   def nodesNear(p: Point) = mongoDb("node") find (Obj("loc" -> near(p))) map (Node(_))
   def nodesWithin(b: Bounds) = mongoDb("node") find (Obj("loc" -> within(b))) map (Node(_))
 
-  def waysIntersecting(b: Bounds) = mongoDb("way") find (Obj("points" -> within(b))) map (Way(_))
+  def waysIntersecting(b: Bounds, trimmed: Boolean = false) = mongoDb("way") find (Obj("points" -> within(b))) flatMap (p => if (trimmed) Way(p).trimmed(b) else List(Way(p)))
 
   def relationsContainingNodes(nodeOsmIds: Array[Int]) = mongoDb("osmrelation").find(Obj("members.type" -> "node", "members.ref" -> nodeOsmIds)) map (OsmRelation(_)) toSeq
   def relationsContainingWays(wayOsmIds: Array[Int]) = mongoDb("osmrelation").find(Obj("members.type" -> "way", "members.ref" -> Obj("$in" -> ObjList(wayOsmIds)))) map (OsmRelation(_)) toSeq
@@ -49,16 +49,17 @@ class MapDao(val dbName: String) extends BaseDao {
 
     val wayCollection = mongoDb("way")
     var wayCount = 0
-    println(osmDao.mongoDb("osmway").count)
-    val osmWays = osmDao.mongoDb("osmway") find () map (OsmWay(_))
-    //println(osmWays.size)
+    val dbObjs = osmDao.mongoDb("osmway") find ()
+    val osmWays = dbObjs map { obj =>
+      OsmWay(obj)
+    }
     val ways = osmWays map { osmWay =>
-      val referencedPoints = osmDao.getNodes(osmWay.nodeIds)
+      val referencedPoints = osmDao.getNodes(osmWay.nodeIds).toSeq
       val way = osmWay.asWay(referencedPoints)
-      println(way)
       wayCount += 1
       way
     }
+    for (way <- ways) { wayCollection.insert(way.toObj) }
     println("Inserted %s ways." format wayCount)
 
     val osmRelations = osmDao.mongoDb("osmrelation")

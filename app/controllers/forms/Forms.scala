@@ -7,6 +7,6 @@ import maptower.map.Bounds
 object Forms {
   val bounds = Form(
     mapping(
-      "ul" -> point,
-      "br" -> point)(Bounds.apply)(Bounds.unapply))
+      "min" -> point,
+      "max" -> point)(Bounds.apply)(Bounds.unapply))
 }

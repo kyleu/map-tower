@@ -1,17 +1,14 @@
 @(message: String)
 
 @main("MapTower!") {
-    @message
+    <p>@message</p>
 
-    <div>
-        <a href="sandbox/mapTest">Map Test</a>
-        <br/>
-        <a href="sandbox/pathTest">Path Test</a>
+    <h3>Test</h3>
+    <p><a href="sandbox/mapTest">Map Test</a></p>
+    <p><a href="sandbox/pathTest">Path Test</a></p>
+    <p><a href="sandbox/enableLogging">Enable Logging</a>
 
-        <br/>
-        <br/>
-        <a href="sandbox/rebuildMaps">Rebuild Maps Datastore</a>
-        <br/>
-        <a href="sandbox/rebuildOsm">Rebuild Osm Datastore</a>
-    </div>
+    <h3>Admin</h3>
+    <p><a href="sandbox/rebuildMaps">Rebuild Maps Datastore</a></p>
+    <p><a href="sandbox/rebuildOsm">Rebuild Osm Datastore</a></p>
 }

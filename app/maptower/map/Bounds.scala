@@ -1,7 +1,5 @@
 package maptower.map
 
-case class Bounds(ul: Point, br: Point) {
-  def contains(p: Point) = {
-    false
-  }
+case class Bounds(min: Point, max: Point) {
+  def contains(p: Point) = p >= min && p <= max
 }

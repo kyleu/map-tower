@@ -29,7 +29,7 @@ class OsmDao(val dbName: String) extends BaseDao {
 
   def nodesNear(p: Point) = mongoDb("osmnode") find (Obj("loc" -> near(p))) map (OsmNode(_))
   def nodesWithin(b: Bounds) = mongoDb("osmnode") find (Obj("loc" -> within(b))) map (OsmNode(_))
-  def getNodes(nodeIds: Seq[Int]) = mongoDb("osmnode") find ("loc" $in nodeIds) map (OsmNode(_))
+  def getNodes(nodeIds: Seq[Int]) = mongoDb("osmnode") find ("osmId" $in nodeIds) map (OsmNode(_))
 
   def waysContainingNodes(nodeOsmIds: Array[Int]) = mongoDb("osmway") find ("nodes" $in nodeOsmIds) map (OsmWay(_))
 

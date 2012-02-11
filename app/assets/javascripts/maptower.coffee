@@ -1,3 +1,7 @@
+class Point
+  constructor: (@x, @y) ->
+  testMethod: () -> "!"
+
 class CustomIcon extends L.Icon
   constructor: (@iconUrl) ->
   shadowUrl: '/assets/images/map/shadow.png'
@@ -49,7 +53,7 @@ MapNetwork =
   update: (b) =>
     ul = b.getNorthWest()
     br = b.getSouthEast()
-    params = {"ul.x": ul.lng, "ul.y": ul.lat, "br.x": br.lng, "br.y": br.lat}
+    params = {"min.x": ul.lng, "min.y": br.lat, "max.x": br.lng, "max.y": ul.lat}
     callback = (rsp) -> 
       $.each(rsp.nodes, (i) ->
         node = rsp.nodes[i]
@@ -93,30 +97,27 @@ class MapView
   renderNode: (n) =>
     tagMessages = for k, v of n.tags 
       "#{k}: #{v}"
-    if (tagMessages.length > 0)
-      marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (n.tags.size % 2 == 0) then pointTagsIcon else pointIcon})
-      @map.addLayer(marker)
-      message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>#{n.typ}<br/>\n"
-      message += tagMessages.join("<br/>\n")  
-      marker.bindPopup(message)
+
+    marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (tagMessages.length % 2 == 0) then pointTagsIcon else pointIcon})
+    @map.addLayer(marker)
+    message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>#{n.typ}<br/>\n"
+    message += tagMessages.join("<br/>\n")
+    marker.bindPopup(message)
     undefined
 
   renderWay: (w) =>
     tagMessages = for k, v of w.tags 
       "#{k}: #{v}"
 
-    if (tagMessages.length > 0)
-      latlngs = new Array
-      for k, v of w.nodeIds 
-        node = MapNetwork.nodeCache[v]
-        if node 
-          latlngs.push(new L.LatLng(node.loc.y, node.loc.x))
+    latlngs = new Array
+    for i of w.points
+      latlngs.push(new L.LatLng(w.points[i].y, w.points[i].x))
 
-      way =  new L.Polyline(latlngs, {color: 'red'});
-      @map.addLayer(way)
-      message = "<trong>Way</strong><br/>\n"
-      message += tagMessages.join("<br/>\n")  
-      way.bindPopup(message)
+    way =  new L.Polyline(latlngs, {color: 'red'});
+    @map.addLayer(way)
+    message = "<trong>Way</strong><br/>\n"
+    message += tagMessages.join("<br/>\n")  
+    way.bindPopup(message)
     undefined
 
 $ -> 

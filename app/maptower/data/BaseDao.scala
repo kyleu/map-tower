@@ -9,7 +9,7 @@ object BaseDao {
 }
 
 class BaseDao {
-  protected def within(b: Bounds) = Obj("$within" -> Obj("$box" -> Array(Array(b.ul.x, b.ul.y), Array(b.br.x, b.br.y))))
+  protected def within(b: Bounds) = Obj("$within" -> Obj("$box" -> Array(Array(b.min.x, b.min.y), Array(b.max.x, b.max.y))))
   protected def near(p: Point) = Obj("$near" -> Array(p.x, p.y))
 
 }

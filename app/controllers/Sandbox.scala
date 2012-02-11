@@ -47,7 +47,7 @@ object Sandbox extends Controller with MongoClient {
     val bounds = Forms.bounds.bindFromRequest.get
 
     val nodes = mapDao.nodesWithin(bounds) toSeq
-    val ways = mapDao.waysIntersecting(bounds) toSeq
+    val ways = mapDao.waysIntersecting(bounds, true) toSeq
     val rsp = generate(Map("nodes" -> nodes, "ways" -> ways))
     Ok(rsp).as("application/json")
   }

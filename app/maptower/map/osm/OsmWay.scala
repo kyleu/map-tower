@@ -18,9 +18,11 @@ object OsmWay {
 }
 
 case class OsmWay(osmId: Int, nodeIds: Seq[Int], tags: Map[String, String] = Map.empty) extends Tags {
-  def asWay(referencedOsmNodes: Iterator[OsmNode]): Way = {
-    val nodes = referencedOsmNodes map { n => (n.osmId -> n.loc) } toMap
-    val points = nodeIds map (id => nodes(id))
-    new Way(osmId, tags.get("name").get, "typ", points, trimmedTags(Array()))
+  def asWay(referencedOsmNodes: Seq[OsmNode]): Way = {
+    val nodes = referencedOsmNodes map { n => (n.osmId -> n.loc) }
+    val nodeMap = nodes.toMap
+    val points = nodeIds flatMap (id => nodeMap.get(id))
+
+    new Way(osmId, tags.get("name").getOrElse("Unknown"), "typ", points, trimmedTags(Array()))
   }
 }
