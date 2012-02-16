@@ -8,18 +8,21 @@ object BaseDao {
 
 }
 
-abstract class BaseDao(dbName: String, enableStats: Boolean) {
+abstract class BaseDao(dbName: String, enableTrace: Boolean) {
   val mongoDb = MongoConnection()(dbName)
 
-  if (enableStats) {
-    println(mongoDb.stats)
+  if (enableTrace) {
   }
 
   def wipe {
     mongoDb.dropDatabase()
   }
 
-  def index
+  def ensureIndexes
+
+  def stats = {
+    mongoDb.stats
+  }
 
   def importJson(json: String) = {
 

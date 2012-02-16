@@ -4,14 +4,15 @@ import java.io._
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.gridfs.Imports._
 import play.api.Logger
+import java.util.Date
 
-class TileDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enableStats) {
+class TileDao(dbName: String, enableTrace: Boolean) extends BaseDao(dbName, enableTrace) {
   private val styleId = 998
   private val rootUrl = "http://%s.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/%s/256/".format("a", styleId)
 
   private lazy val mongoFs = GridFS(mongoDb)
 
-  override def index {
+  override def ensureIndexes {
 
   }
 
@@ -24,6 +25,7 @@ class TileDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enab
   }
 
   private def cache(filename: String) = {
+    val start = new Date
     val url = rootUrl + filename.replace("-", "/")
     val uc = new java.net.URL(url).openConnection();
     val contentType = uc.getContentType();
@@ -38,6 +40,6 @@ class TileDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enab
       fh.filename = filename
       fh.contentType = contentType
     }
-    Logger.info("Cached %s as %s in %sms.".format(filename, contentType, 0))
+    Logger.info("Cached %s as %s in %sms.".format(filename, contentType, new Date().getTime() - start.getTime()))
   }
 }

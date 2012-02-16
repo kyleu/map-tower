@@ -5,8 +5,8 @@ import com.mongodb.casbah.Imports._
 import maptower.map._
 import maptower.map.osm._
 
-class OsmDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enableStats) {
-  override def index {
+class OsmDao(dbName: String, enableTrace: Boolean) extends BaseDao(dbName, enableTrace) {
+  override def ensureIndexes {
     mongoDb("osmnode").createIndex(Obj("osmId" -> 1))
     mongoDb("osmnode").createIndex(Obj("tags.k" -> 1))
     mongoDb("osmnode").createIndex(Obj("loc" -> "2d"))

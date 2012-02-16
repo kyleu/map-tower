@@ -18,18 +18,18 @@ object Admin extends Controller {
       case "osm" =>
         osmDao.wipe
         OsmImporter.load(osmDao, "data/atlanta.osm")
-        osmDao.index
+        osmDao.ensureIndexes
       case "map" =>
         mapDao.wipe
         OsmImporter.convert(osmDao, mapDao)
-        mapDao.index
+        mapDao.ensureIndexes
       case "game" =>
         gameDao.wipe
         gameDao.importJson("gametypes.json")
-        gameDao.index
+        gameDao.ensureIndexes
       case "tile" =>
         tileDao.wipe
-        tileDao.index
+        tileDao.ensureIndexes
     }
     Ok("OK")
   }

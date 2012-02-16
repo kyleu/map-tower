@@ -4,8 +4,8 @@ import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList
 import com.mongodb.casbah.Imports._
 import maptower.map._
 
-class MapDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enableStats) {
-  override def index {
+class MapDao(dbName: String, enableTrace: Boolean) extends BaseDao(dbName, enableTrace) {
+  override def ensureIndexes {
     mongoDb("node").createIndex(Obj("osmId" -> 1))
     mongoDb("node").createIndex(Obj("tags.k" -> 1))
     mongoDb("node").createIndex(Obj("loc" -> "2d"))

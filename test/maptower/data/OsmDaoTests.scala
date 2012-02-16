@@ -11,10 +11,10 @@ class OsmDataTests {
   def xmlLoad {
     osmDao.wipe
     OsmImporter.load(osmDao, "data/eugene.osm")
-    osmDao.index
+    osmDao.ensureIndexes
 
     mapDao.wipe
     OsmImporter.convert(osmDao, mapDao)
-    mapDao.index
+    mapDao.ensureIndexes
   }
 }
