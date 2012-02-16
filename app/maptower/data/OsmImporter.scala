@@ -12,7 +12,7 @@ object OsmImporter {
     val src = Source.fromFile(new File(filename))
     val er = new XMLEventReader(src)
 
-    var numRecordsProcessed = 0;
+    var numRecordsProcessed = 0
 
     var current = Obj.newBuilder
     var tags = ObjList.newBuilder

@@ -5,12 +5,15 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.gridfs.Imports._
 import play.api.Logger
 
-class TileDao(val dbName: String) extends MongoClient {
+class TileDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enableStats) {
   private val styleId = 998
   private val rootUrl = "http://%s.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/%s/256/".format("a", styleId)
 
-  private lazy val mongoDb = MongoConnection()(dbName)
   private lazy val mongoFs = GridFS(mongoDb)
+
+  override def index {
+
+  }
 
   def get(z: Int, x: Int, y: Int): GridFSDBFile = {
     val filename = "%s-%s-%s.png".format(z, y, x)

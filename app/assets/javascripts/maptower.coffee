@@ -14,6 +14,8 @@ pointIcon = new CustomIcon '/assets/images/map/point.png'
 pointTagsIcon = new CustomIcon '/assets/images/map/point-tags.png'
 wayIcon = new CustomIcon '/assets/images/map/way.png'
 
+gameId = "atlanta"
+
 mapView = null
 
 testData = (center, mapView) ->
@@ -64,14 +66,14 @@ MapNetwork =
         mapView.renderNode(node))
       $.each(rsp.ways, (i) -> 
         mapView.renderWay(rsp.ways[i]))
-    $.get('/sandbox/test/data', params, callback, "json")
+    $.get('/game/' + gameId + '/data', params, callback, "json")
     undefined
 
 # Contains all Leaflet interactions, caches map data
 class MapView
   constructor: (id, center, zoom) -> 
     @map = new L.Map('map', { attributionControl: false })
-    @map.setView(center, 17)
+    @map.setView(center, 16)
     @map.on('click', @onMapClick)
     @map.on('zoomend', @onMapZoom)
 
@@ -100,7 +102,7 @@ class MapView
 
     marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (tagMessages.length % 2 == 0) then pointTagsIcon else pointIcon})
     @map.addLayer(marker)
-    message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>#{n.typ}<br/>\n"
+    message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>\n#{n.category}<br/><br/>\n"
     message += tagMessages.join("<br/>\n")
     marker.bindPopup(message)
     undefined

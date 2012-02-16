@@ -26,13 +26,13 @@ case class Way(osmId: Int, name: String, category: String, subcategory: String, 
       if (b.contains(point)) {
         if (min == -1) min = idx
         if (max != -1 && idx - max > 1) {
-          ret = ret ::: List(new Way(osmId, name, category, subcategory, trimPlusOne(points, min, max)))
+          ret = ret ::: List(new Way(osmId, name, category, subcategory, trimPlusOne(points, min, max), tags))
           min = idx
         }
         max = idx
       }
     }
-    ret ::: List(new Way(osmId, name, category, subcategory, trimPlusOne(points, min, max)))
+    ret ::: List(new Way(osmId, name, category, subcategory, trimPlusOne(points, min, max), tags))
   }
 
   private def trimPlusOne(points: Seq[Point], min: Int, maxInclusive: Int) = {

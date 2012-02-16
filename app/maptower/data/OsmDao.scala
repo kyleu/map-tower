@@ -5,14 +5,8 @@ import com.mongodb.casbah.Imports._
 import maptower.map._
 import maptower.map.osm._
 
-class OsmDao(val dbName: String) extends BaseDao {
-  lazy val mongoDb = MongoConnection()(dbName)
-
-  def wipe() {
-    mongoDb.dropDatabase()
-  }
-
-  def index() {
+class OsmDao(dbName: String, enableStats: Boolean) extends BaseDao(dbName, enableStats) {
+  override def index {
     mongoDb("osmnode").createIndex(Obj("osmId" -> 1))
     mongoDb("osmnode").createIndex(Obj("tags.k" -> 1))
     mongoDb("osmnode").createIndex(Obj("loc" -> "2d"))

@@ -4,8 +4,8 @@ import org.junit.Test
 import org.junit.Assert._
 import com.mongodb.casbah.Imports._
 
-class OsmDataTests extends MongoClient {
-  val dbName = "test"
+class OsmDataTests {
+  maptower.data.dbName = "test"
 
   @Test
   def xmlLoad {
