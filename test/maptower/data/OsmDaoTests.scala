@@ -3,9 +3,10 @@ package maptower.data
 import org.junit.Test
 import org.junit.Assert._
 import com.mongodb.casbah.Imports._
+import maptower.map.osm.OsmImporter
 
 class OsmDataTests {
-  maptower.data.dbName = "test"
+  maptower.data.dbNamePrefix = "test"
 
   @Test
   def xmlLoad {

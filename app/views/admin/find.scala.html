@@ -1,0 +1,27 @@
+@(db: String, coll: String, filter: String, results: Iterator[com.mongodb.casbah.Imports.DBObject])
+
+@admin.layout() {
+    <form action="" class="form-horizontal" style="padding-top:20px;">
+      <input type="hidden" name="db" value="@db" />
+      <input type="hidden" name="coll" value="@coll" />
+      <input type="hidden" name="op" value="find" id="op" />
+      <fieldset>
+        <legend>@db/@coll</legend>
+        <div class="control-group">
+          <label class="control-label" for="filter">Filter</label>
+          <div class="controls">
+            <input type="text" name="filter" id="filter" class="input-xlarge" value="@filter" />
+            <p class="help-block">Any valid MongoDB json filter will do.</p>
+          </div>
+        </div>
+      </fieldset>
+      <div class="form-actions">
+        <button type="submit" onclick="$('#op').val('find');" class="btn btn-primary">Find</button>
+        <button type="submit" onclick="$('#op').val('insert');" class="btn">Insert</button>
+        <button type="submit" onclick="if(!confirm('Really delete all records matching this query?'))return false;$('#op').val('delete');" class="btn">Delete</button>
+      </div>
+    </form>
+    @for(result <- results) {
+      <pre>@result.toString()</pre>
+    }
+}

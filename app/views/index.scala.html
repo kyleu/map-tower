@@ -3,10 +3,15 @@
 @main("MapTower!") {
     <p>@message</p>
 
-    <h3>Game Test</h3>
-    <p><a href="game/atlanta">Atlanta, GA</a></p>
-    <p><a href="game/eugene">Eugene, OR</a></p>
-    
-    <h3>Administration</h3>
-    <p><a href="admin/index">Dashboard</a></p>
+    <p>
+        @defining(Map("atlanta" -> "Atlanta, GA", "eugene" -> "Eugene, OR")) { gameTypes =>
+            @for((code, name) <- gameTypes) { 
+                <a href="@routes.Game.index(code)">@name</a><br/>
+            }
+        }
+    </p>
+
+    <p>
+        <a href="@routes.Admin.index()">Administration</a><br/>
+    </p>
 }

@@ -1,11 +1,11 @@
-package maptower.data
+package maptower.map.osm
 
 import scala.xml.pull._
 import scala.io.Source
 import java.io.File
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList }
 import com.mongodb.casbah.Imports._
-import maptower.map.osm._
+import maptower.data._
 
 object OsmImporter {
   def load(osmDao: OsmDao, filename: String) {
@@ -96,14 +96,16 @@ object OsmImporter {
       wayCount += 1
       way
     }
-    for (way <- ways) { wayCollection.insert(way.toObj) }
+    for (way <- ways) {
+      wayCollection.insert(way.toObj)
+    }
     println("Inserted %s ways." format wayCount)
 
     var relationCount = 0
     val osmRelations = osmDao.mongoDb("osmrelation") find () map (OsmRelation(_))
     for (relation <- osmRelations) {
       relationCount += 1
-      println(relation.members.size, relation.tags)
+      //println(relation.members.size, relation.tags)
     }
     println("Processed %s relations." format relationCount)
   }

@@ -5,36 +5,42 @@ import play.api.mvc._
 import controllers.forms._
 import maptower.data._
 import maptower.map.Point
+import maptower.map.osm.OsmImporter
 
 import com.codahale.jerkson.Json._
+import com.mongodb.casbah.commons.{ MongoDBObject => Obj }
 
 object Admin extends Controller {
   def index = Action {
     Ok(views.html.admin.index())
   }
 
-  def rebuild(dbType: String) = Action {
-    dbType match {
+  def datastore(db: String) = Action {
+    val dao = getDao(db)
+    Ok(views.html.admin.datastore(db, dao.getInfo))
+  }
+
+  def rebuild(db: String) = Action {
+    val dao = getDao(db)
+    dao.wipe
+    db match {
       case "osm" =>
-        osmDao.wipe
         OsmImporter.load(osmDao, "data/atlanta.osm")
-        osmDao.ensureIndexes
       case "map" =>
-        mapDao.wipe
         OsmImporter.convert(osmDao, mapDao)
-        mapDao.ensureIndexes
-      case "game" =>
-        gameDao.wipe
-        gameDao.importJson("gametypes.json")
-        gameDao.ensureIndexes
-      case "tile" =>
-        tileDao.wipe
-        tileDao.ensureIndexes
+      case _ =>
     }
+    dao.ensureIndexes
     Ok("OK")
   }
 
   def logs = Action {
-    Ok
+    TODO
+  }
+
+  def find(db: String = "map", coll: String = "node", filter: Option[String] = None, op: Option[String] = None) = Action {
+    val dao = getDao(db)
+    val results = dao.mongoDb(coll).find(BaseDao.fromJson(filter.getOrElse("{}"))).limit(100).toIterator
+    Ok(views.html.admin.find(db, coll, filter.getOrElse("{}"), results))
   }
 }

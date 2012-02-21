@@ -1,0 +1,43 @@
+@()(content: Html)
+
+@main("Administration") {
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+        <div class="section">
+            <h3>MongoDB</h3>
+            <p>
+                <a href="@routes.Admin.logs()">Monitoring</a><br/>
+            </p>
+        </div>
+
+        @defining(List("Map", "Osm", "Game", "Tile")) { dbs =>
+            @for(db <- dbs) { 
+                <div class="section">
+                    <h3><a href="">@db Datastore</a></h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Rows</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(collection <- maptower.data.getDao(db toLowerCase).getInfo) {
+                                <tr>
+                                    <td><a href="@routes.Admin.find(db toLowerCase, collection._1, None, None)">@collection._1</a></td>
+                                    <td>@collection._2</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </div>
+    <div class="span10">
+        @content
+    </div>
+  </div>
+</div>
+}

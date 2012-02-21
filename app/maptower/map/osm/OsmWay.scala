@@ -16,7 +16,8 @@ object OsmWay {
     new OsmWay(obj.as[Int]("osmId"), nodeIds, Tags(obj))
   }
 
-  private val categoryPrefixes = "".split(",")
+  private val categoryPrefixes = "highway,tourism,railway,leisure,landuse,amenity".split(",")
+  private val categoryValuePrefixes = "tourism,amenity,leisure,railway".split(",")
 }
 
 case class OsmWay(osmId: Int, nodeIds: Seq[Int], tags: Map[String, String] = Map.empty) extends Tags {
@@ -25,8 +26,11 @@ case class OsmWay(osmId: Int, nodeIds: Seq[Int], tags: Map[String, String] = Map
     val nodeMap = nodes.toMap
     val points = nodeIds flatMap (id => nodeMap.get(id))
 
-    lazy val category = matchFirst(OsmWay.categoryPrefixes)
+    lazy val category = matchFirst(OsmWay.categoryPrefixes) match {
+      case (k, v) if (OsmWay.categoryValuePrefixes.contains(k)) => v
+      case (k, v) => k + ":" + v
+    }
 
-    new Way(osmId, tags.get("name").getOrElse("Unknown"), category._1, category._2, points, trimmedTags(OsmWay.categoryPrefixes))
+    new Way(osmId, tags.get("name").getOrElse("Unknown"), category, points, trimmedTags(OsmWay.categoryPrefixes))
   }
 }

@@ -5,7 +5,9 @@ import com.mongodb.casbah.Imports._
 import maptower.map.{ Point, Bounds }
 
 object BaseDao {
-
+  def fromJson(json: String) = {
+    com.mongodb.util.JSON.parse(json).asInstanceOf[DBObject]
+  }
 }
 
 abstract class BaseDao(dbName: String, enableTrace: Boolean) {
@@ -24,8 +26,9 @@ abstract class BaseDao(dbName: String, enableTrace: Boolean) {
     mongoDb.stats
   }
 
-  def importJson(json: String) = {
-
+  def getInfo = {
+    val collections = mongoDb.collectionNames.toArray[String] map (name => (name, mongoDb(name).count.toInt))
+    collections.toMap
   }
 
   protected def within(b: Bounds) = Obj("$within" -> Obj("$box" -> Array(Array(b.min.x, b.min.y), Array(b.max.x, b.max.y))))

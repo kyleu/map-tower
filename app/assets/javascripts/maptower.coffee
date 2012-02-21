@@ -1,6 +1,6 @@
 class Point
   constructor: (@x, @y) ->
-  testMethod: () -> "!"
+  testMethod: () -> new L.LatLng(@y, @x)
 
 class CustomIcon extends L.Icon
   constructor: (@iconUrl) ->
@@ -15,37 +15,7 @@ pointTagsIcon = new CustomIcon '/assets/images/map/point-tags.png'
 wayIcon = new CustomIcon '/assets/images/map/way.png'
 
 gameId = "atlanta"
-
 mapView = null
-
-testData = (center, mapView) ->
-  marker = new L.Marker(new L.LatLng(center.lat - 0.03, center.lng - 0.005), {icon: pointIcon, draggable: true})
-  marker.bindPopup("Fuck you, I'm a marker!")
-  mapView.map.addLayer(marker)
-
-  circleLocation = new L.LatLng(center.lat + 0.02, center.lng + 0.001)
-  circleOptions =
-    color : 'red',
-    fillColor : '#f03',
-    fillOpacity : 0.5
-
-  circle = new L.Circle(circleLocation, 500, circleOptions)
-  circle.bindPopup("Fuck you, I'm a circle!")
-  mapView.map.addLayer(circle)
-
-  p1 = new L.LatLng(center.lat - 0.01, center.lng + 0.007)
-  p2 = new L.LatLng(p1.lat - 0.006, p1.lng + 0.02)
-  p3 = new L.LatLng(p1.lat + 0.001, p1.lng + 0.033)
-  polygonPoints = [ p1, p2, p3 ]
-  polygon = new L.Polygon(polygonPoints)
-  polygon.bindPopup("Fuck you, I'm a polygon!")
-  mapView.map.addLayer(polygon)
-
-  popup = new L.Popup()
-  popup.setLatLng(center)
-  popup.setContent("I am a pointless popup.<br/>Because, that's why.")
-
-  mapView.map.openPopup(popup)
 
 # Handles server communication
 MapNetwork =
@@ -100,7 +70,7 @@ class MapView
     tagMessages = for k, v of n.tags 
       "#{k}: #{v}"
 
-    marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (tagMessages.length % 2 == 0) then pointTagsIcon else pointIcon})
+    marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (tagMessages.length > 0) then pointTagsIcon else pointIcon})
     @map.addLayer(marker)
     message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>\n#{n.category}<br/><br/>\n"
     message += tagMessages.join("<br/>\n")
@@ -117,16 +87,14 @@ class MapView
 
     way =  new L.Polyline(latlngs, {color: 'red'});
     @map.addLayer(way)
-    message = "<trong>Way</strong><br/>\n"
-    message += tagMessages.join("<br/>\n")  
+    message = "Way (#{w.points.length} points)<br/><br/>\n<strong>#{w.name}</strong><br/>\n#{w.category}<br/><br/>\n"
+    message += tagMessages.join("<br/>\n")
     way.bindPopup(message)
     undefined
 
 $ -> 
   center = new L.LatLng(33.7612, -84.3856)
-
   mapView = new MapView("map", center, 17)
   MapNetwork.update(mapView.map.getBounds())
-  testData(center, mapView)
   mapView.addTileLayer()
   undefined
