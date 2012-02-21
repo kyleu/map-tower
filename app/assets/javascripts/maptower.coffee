@@ -1,6 +1,23 @@
 class Point
   constructor: (@x, @y) ->
-  testMethod: () -> new L.LatLng(@y, @x)
+
+class Node
+  constructor: (n) ->
+    console.log(n)
+    @name = n.name
+    @category = n.category
+    @loc = n.loc
+    @tags = n.tags
+
+  render: (mapView) ->
+    tagMessages = for k, v of @tags 
+      "#{k}: #{v}"
+    @marker = new L.Marker(new L.LatLng(@loc.y, @loc.x), {icon: if (tagMessages.length > 0) then pointTagsIcon else pointIcon})
+    @message = "lat: #{@loc.y}<br/>lng: #{@loc.x}<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
+    @message += tagMessages.join("<br/>\n")
+    @marker.bindPopup(@message)
+    mapView.map.addLayer(@marker)
+    undefined
 
 class CustomIcon extends L.Icon
   constructor: (@iconUrl) ->
@@ -14,36 +31,46 @@ pointIcon = new CustomIcon '/assets/images/map/point.png'
 pointTagsIcon = new CustomIcon '/assets/images/map/point-tags.png'
 wayIcon = new CustomIcon '/assets/images/map/way.png'
 
-gameId = "atlanta"
-mapView = null
-
 # Handles server communication
-MapNetwork =
+class MapTower
+  constructor: (@gameId) ->
+  
   nodeCache: {}
   wayCache: {}
+  mapView: null
+
+  initView: (id, center, zoom) ->
+    @mapView = new MapView(id, center, zoom)
+    @update(@mapView.map.getBounds())
+    @mapView.addTileLayer()
 
   update: (b) =>
     ul = b.getNorthWest()
     br = b.getSouthEast()
     params = {"min.x": ul.lng, "min.y": br.lat, "max.x": br.lng, "max.y": ul.lat}
-    callback = (rsp) -> 
-      $.each(rsp.nodes, (i) ->
-        node = rsp.nodes[i]
-        if MapNetwork.nodeCache[node.osmId]
-          console.log("Cached node on update: ", node)
-          return
-        MapNetwork.nodeCache[node.osmId] = node
-        mapView.renderNode(node))
-      $.each(rsp.ways, (i) -> 
-        mapView.renderWay(rsp.ways[i]))
-    $.get('/game/' + gameId + '/data', params, callback, "json")
+
+    $.get('/game/' + @gameId + '/data', params, @networkCallback, "json")
     undefined
+
+  networkCallback: (rsp) =>
+    @addNode node for node in rsp.nodes
+    @mapView.renderWay way for way in rsp.ways
+
+  addNode: (obj) =>
+    if @nodeCache[obj.osmId]
+      console.warn("Encountered cached node on update: ", obj)
+    else
+      node = new Node(obj)
+      @nodeCache[node.osmId] = node
+      node.render(@mapView)
+    undefined
+
 
 # Contains all Leaflet interactions, caches map data
 class MapView
   constructor: (id, center, zoom) -> 
     @map = new L.Map('map', { attributionControl: false })
-    @map.setView(center, 16)
+    @map.setView(center, zoom)
     @map.on('click', @onMapClick)
     @map.on('zoomend', @onMapZoom)
 
@@ -64,18 +91,7 @@ class MapView
     undefined
 
   onMapZoom: (e) => 
-    # MapNetwork.update(@map.getBounds())
-
-  renderNode: (n) =>
-    tagMessages = for k, v of n.tags 
-      "#{k}: #{v}"
-
-    marker = new L.Marker(new L.LatLng(n.loc.y, n.loc.x), {icon: if (tagMessages.length > 0) then pointTagsIcon else pointIcon})
-    @map.addLayer(marker)
-    message = "lat: #{n.loc.y}<br/>lng: #{n.loc.x}<br/><br/>\n<strong>#{n.name}</strong><br/>\n#{n.category}<br/><br/>\n"
-    message += tagMessages.join("<br/>\n")
-    marker.bindPopup(message)
-    undefined
+    # MapTower.update(@map.getBounds())
 
   renderWay: (w) =>
     tagMessages = for k, v of w.tags 
@@ -85,7 +101,7 @@ class MapView
     for i of w.points
       latlngs.push(new L.LatLng(w.points[i].y, w.points[i].x))
 
-    way =  new L.Polyline(latlngs, {color: 'red'});
+    way =  new L.Polyline(latlngs, {color: 'red'})
     @map.addLayer(way)
     message = "Way (#{w.points.length} points)<br/><br/>\n<strong>#{w.name}</strong><br/>\n#{w.category}<br/><br/>\n"
     message += tagMessages.join("<br/>\n")
@@ -94,7 +110,6 @@ class MapView
 
 $ -> 
   center = new L.LatLng(33.7612, -84.3856)
-  mapView = new MapView("map", center, 17)
-  MapNetwork.update(mapView.map.getBounds())
-  mapView.addTileLayer()
+  mapTower = new MapTower("atlanta")
+  mapTower.initView("map", center, 16)
   undefined
