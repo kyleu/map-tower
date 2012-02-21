@@ -3,7 +3,6 @@ class Point
 
 class Node
   constructor: (n) ->
-    console.log(n)
     @name = n.name
     @category = n.category
     @loc = n.loc
