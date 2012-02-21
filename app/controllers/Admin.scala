@@ -40,7 +40,20 @@ object Admin extends Controller {
 
   def find(db: String = "map", coll: String = "node", filter: Option[String] = None, op: Option[String] = None) = Action {
     val dao = getDao(db)
-    val results = dao.mongoDb(coll).find(BaseDao.fromJson(filter.getOrElse("{}"))).limit(100).toIterator
+    val c = dao.mongoDb(coll)
+    val results = op match {
+      case Some("insert") => {
+        c.insert(BaseDao.fromJson(filter.getOrElse("{}")))
+        Iterator(Obj("status" -> "OK"))
+      }
+
+      case Some("delete") => {
+        c.remove(BaseDao.fromJson(filter.getOrElse("{}")))
+        Iterator(Obj("status" -> "OK"))
+      }
+
+      case _ => c.find(BaseDao.fromJson(filter.getOrElse("{}"))).limit(100).toIterator
+    }
     Ok(views.html.admin.find(db, coll, filter.getOrElse("{}"), results))
   }
 }
