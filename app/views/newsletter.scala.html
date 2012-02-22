@@ -1,0 +1,113 @@
+@()
+
+@headerContent() = {
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      #editor, #working {
+        display:none; 
+      }
+    </style>
+    <script>
+      function start() {
+        $('#chosenname').val($('#startingname').val());
+        $('#stinger, #editor').toggle();
+      }
+
+      function add(t, u) {
+          if(t === "rss") {
+            alert("Sorry, not quite yet...")
+            return;
+          }
+          $("#working").show()
+          $.get('/newsletter/add', {contentType:t, url: u}, function(rsp) {$("#working").hide();$("#articles").append(rsp);}, "html");
+      }
+
+      $(function() {$("#startingname").focus()})
+    </script>
+}
+
+@main("Newsletter Test", headerContent) {
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand" href="#">NEWZLETTERZ EXTREME!</a>
+      <div class="nav-collapse">
+        <ul class="nav">
+          <li class="active"><a href="">Make One!</a></li>
+          <li><a href="/admin">Admin</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="mailto:kyle@@provingground.net">Contact Kyle, Who Is Awesome</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+      <form class="navbar-search pull-right">
+        <input type="text" class="search-query" placeholder="Search for topics and stuff">
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="hero-unit" id="stinger">
+    <h1>Let's make a freakin' newsletter!</h1>
+    <p>Whee! Yeah, this is a boring one-off proof-of-concept. But it could be cool. Someday.</p>
+    <div style="margin:auto;padding-top:20px;">
+      <form onsubmit="start();return false;">
+        <input type="text" id="startingname" placeholder="What's the name of this thing?">
+        <input type="submit" class="btn btn-primary" style="margin-left:20px;" value="Let's do this &raquo;" />
+      </form>
+    </div>
+  </div>
+  <div id="editor">
+    <form class="well">
+      <input type="text" id="chosenname" class="span8" placeholder="Newsletter Name" style="font-size:30px;height:40px;line-height:35px;">
+      <textarea class="span8" placeholder="Description" style="height:80px;"></textarea>
+    </form>
+    <div class="row" id="options">
+      <div class="span4">
+          <h3>Add a cool web page</h3>
+          <p>Punch in one of those long http thingys, and we'll feature it in your newsletter.</p>
+          <form onsubmit="add('url', $('#url').val());return false;">
+            <p><input type="text" id="url" placeholder="Article url"></p>
+            <p>
+              <input type="submit" class="btn" value="Add this thing to my thing &raquo;" />
+              <span class="label label-warning" id="working">Working...</span>
+            </p>
+          </form>
+      </div>
+      <div class="span4">
+          <h3>Add an RSS feed</h3>
+          <p>What's an RSS feed? Seriously? Everyone knows what those things do. Hit Wikipedia, Grandpa.</p>
+          <form onsubmit="add('rss', $('#rss').val());return false;">
+            <p><input type="text" id="rss" placeholder="RSS feed url"></p>
+            <p><input type="submit" class="btn" value="Add this thing to my thing &raquo;" /></p>
+          </form>
+      </div>
+      <div class="span4">
+          <h3>Add suggested content</h3>
+          <p>We've hand-selected these completely not-randomly-picked articles because you seem like you would enjoy them.</p>
+          <p>
+              <a href="http://i.imgur.com/Ktbdp.jpg"><img src="http://f.thumbs.redditmedia.com/A79guILmtF7reiaG.jpg" width='70' height='70' alt=""/></a>
+              <a href="http://i.imgur.com/dzPWg.jpg"><img src="http://d.thumbs.redditmedia.com/078bpnv_QCNvJvrW.jpg" width='70' height='70' alt=""/></a>
+              <a href="http://i.imgur.com/qrKkT.jpg"><img src="http://d.thumbs.redditmedia.com/9lSiPiQja-gbQMIQ.jpg" width='70' height='70' alt=""/></a>
+          </p>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="span12">
+        <ul class="thumbnails" id="articles">
+        </ul>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <footer><p>&copy; Proving Ground!!!</p></footer>
+</div>
+}

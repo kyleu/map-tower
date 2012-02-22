@@ -1,0 +1,11 @@
+@(article: com.gravity.goose.Article)
+@defining(new java.util.Random().nextInt(4)+3) { idx =>
+  <li class="span@idx">
+    <div class="thumbnail">
+      <img src="@article.topImage.imageSrc" style="width:@{idx * 100 - 40}px;height:180px;" />
+      <a href="@article.canonicalLink"><h5 style="height:18px;overflow:hidden;">@article.title</h5></a>
+      <p style="height:57px;overflow:hidden;">@article.cleanedArticleText</p>
+      <div style="color:grey;text-align:right;text-transform:lowercase;font-size:90%;">@if(article.tags.size > 0){article.tags.reduceLeft(_ + ", " + _)}</div>
+    </div>
+  </li>
+}

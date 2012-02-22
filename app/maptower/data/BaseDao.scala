@@ -8,11 +8,12 @@ object BaseDao {
   def fromJson(json: String) = {
     com.mongodb.util.JSON.parse(json).asInstanceOf[DBObject]
   }
+
+  protected lazy val conn = MongoConnection()
 }
 
 abstract class BaseDao(dbName: String, enableTrace: Boolean) {
-  val mongoDb = MongoConnection()(dbName)
-
+  val mongoDb = BaseDao.conn(dbName)
   if (enableTrace) {
   }
 

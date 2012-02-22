@@ -18,6 +18,25 @@ class Node
     mapView.map.addLayer(@marker)
     undefined
 
+class Way
+  constructor: (w) ->
+    @latlngs = new Array
+    @tags = n.tags
+    for i of w.points
+      @latlngs.push(new L.LatLng(w.points[i].y, w.points[i].x))
+
+  render: (mapView) ->
+    tagMessages = for k, v of w.tags 
+      "#{k}: #{v}"
+
+    @way =  new L.Polyline(latlngs, {color: 'red'})
+    @map.addLayer(way)
+    message = "Way (#{w.points.length} points)<br/><br/>\n<strong>#{w.name}</strong><br/>\n#{w.category}<br/><br/>\n"
+    message += tagMessages.join("<br/>\n")
+    way.bindPopup(message)
+    undefined
+    
+
 class CustomIcon extends L.Icon
   constructor: (@iconUrl) ->
   shadowUrl: '/assets/images/map/shadow.png'
@@ -53,15 +72,24 @@ class MapTower
 
   networkCallback: (rsp) =>
     @addNode node for node in rsp.nodes
-    @mapView.renderWay way for way in rsp.ways
+    @addWay way for way in rsp.ways
 
-  addNode: (obj) =>
+    addNode: (obj) =>
     if @nodeCache[obj.osmId]
       console.warn("Encountered cached node on update: ", obj)
     else
       node = new Node(obj)
       @nodeCache[node.osmId] = node
       node.render(@mapView)
+    undefined
+
+  addWay: (obj) =>
+    if @wayCache[obj.osmId]
+      console.warn("Encountered cached way on update: ", obj)
+    else
+      way = new Way(obj)
+      @wayCache[way.osmId] = way
+      way.render(@mapView)
     undefined
 
 
@@ -91,21 +119,6 @@ class MapView
 
   onMapZoom: (e) => 
     # MapTower.update(@map.getBounds())
-
-  renderWay: (w) =>
-    tagMessages = for k, v of w.tags 
-      "#{k}: #{v}"
-
-    latlngs = new Array
-    for i of w.points
-      latlngs.push(new L.LatLng(w.points[i].y, w.points[i].x))
-
-    way =  new L.Polyline(latlngs, {color: 'red'})
-    @map.addLayer(way)
-    message = "Way (#{w.points.length} points)<br/><br/>\n<strong>#{w.name}</strong><br/>\n#{w.category}<br/><br/>\n"
-    message += tagMessages.join("<br/>\n")
-    way.bindPopup(message)
-    undefined
 
 $ -> 
   center = new L.LatLng(33.7612, -84.3856)
