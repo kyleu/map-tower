@@ -16,7 +16,8 @@ object Newsletter extends Controller {
         val configuration = new Configuration()
         //configuration.setLocalStoragePath("/tmp/goose")
         //configuration.setEnableImageFetching(false)
-        configuration.setImagemagickConvertPath("/Users/kyle/Projects/Libraries/ImageMagick-6.7.5/bin")
+        configuration.imagemagickConvertPath = "/Users/kyle/Projects/Libraries/ImageMagick-6.7.5/bin"
+        configuration.imagemagickIdentifyPath = "/Users/kyle/Projects/Libraries/ImageMagick-6.7.5/bin/identify"
         val goose = new Goose(configuration)
         val article = goose.extractContent(url)
         Ok(views.html.article(article))

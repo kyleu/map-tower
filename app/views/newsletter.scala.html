@@ -2,18 +2,17 @@
 
 @headerContent() = {
     <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      #editor, #working {
-        display:none; 
-      }
+      body { padding-top: 60px; padding-bottom: 40px; }
+      #editor, #working { display:none; }
+      .article .tags {color:grey;text-align:right;text-transform:lowercase;font-size:90%;height:12px;overflow:hidden;}
+      .article .text {height:57px;overflow:hidden;}
+      #no-articles {color:grey; text-align:center; padding-top:10px;}
+      #url, #rss {width:350px;}
     </style>
     <script>
       function start() {
-        $('#chosenname').val($('#startingname').val());
-        $('#stinger, #editor').toggle();
+        $('#chosenname').val($('#startingname').val())
+        $('#stinger, #editor').toggle()
       }
 
       function add(t, u) {
@@ -22,7 +21,13 @@
             return;
           }
           $("#working").show()
-          $.get('/newsletter/add', {contentType:t, url: u}, function(rsp) {$("#working").hide();$("#articles").append(rsp);}, "html");
+          $.get('/newsletter/add', {contentType:t, url: u}, addCallback, "html")
+      }
+      
+      function addCallback(rsp) {
+          $("#working").hide()
+          $("#no-articles").hide()
+          $("#articles").append(rsp)   
       }
 
       $(function() {$("#startingname").focus()})
@@ -56,7 +61,7 @@
 <div class="container">
   <div class="hero-unit" id="stinger">
     <h1>Let's make a freakin' newsletter!</h1>
-    <p>Whee! Yeah, this is a boring one-off proof-of-concept. But it could be cool. Someday.</p>
+    <p>This is a boring proof-of-concept. But it could be cool. Someday.</p>
     <div style="margin:auto;padding-top:20px;">
       <form onsubmit="start();return false;">
         <input type="text" id="startingname" placeholder="What's the name of this thing?">
@@ -66,8 +71,8 @@
   </div>
   <div id="editor">
     <form class="well">
-      <input type="text" id="chosenname" class="span8" placeholder="Newsletter Name" style="font-size:30px;height:40px;line-height:35px;">
-      <textarea class="span8" placeholder="Description" style="height:80px;"></textarea>
+      <input type="text" id="chosenname" class="span10" placeholder="Newsletter Name" style="font-size:30px;height:40px;line-height:35px;">
+      <textarea class="span10" placeholder="Description" style=""></textarea>
     </form>
     <div class="row" id="options">
       <div class="span4">
@@ -76,38 +81,43 @@
           <form onsubmit="add('url', $('#url').val());return false;">
             <p><input type="text" id="url" placeholder="Article url"></p>
             <p>
-              <input type="submit" class="btn" value="Add this thing to my thing &raquo;" />
+              <input type="submit" class="btn btn-info" value="Add this thing to my thing &raquo;" />
               <span class="label label-warning" id="working">Working...</span>
             </p>
           </form>
+      </div>
+      <div class="span4">
+          <h3>Add suggested content</h3>
+          <p>We've hand-selected these sites because you seem like you would enjoy this sort of thing.</p>
+          <p style="line-height:36px;">
+              <a class="btn" target="_blank" href="http://wired.com">Wired</a>
+              <a class="btn" target="_blank" href="http://techcrunch.com">TechCrunch</a>
+              <a class="btn" target="_blank" href="http://online.wsj.com">WSJ</a>
+              <a class="btn" target="_blank" href="http://sports.espn.go.com">ESPN</a>
+              <a class="btn" target="_blank" href="http://gizmodo.com">Gizmodo</a>
+              <a class="btn" target="_blank" href="http://www.boingboing.net">BoingBoing</a>
+              <a class="btn" target="_blank" href="http://social.venturebeat.com">VentureBeat</a>
+              <a class="btn" target="_blank" href="http://www.cracked.com">Cracked</a>
+              <a class="btn" target="_blank" href="http://guardian.co.uk">Guardian</a>
+          </p>
       </div>
       <div class="span4">
           <h3>Add an RSS feed</h3>
           <p>What's an RSS feed? Seriously? Everyone knows what those things do. Hit Wikipedia, Grandpa.</p>
           <form onsubmit="add('rss', $('#rss').val());return false;">
             <p><input type="text" id="rss" placeholder="RSS feed url"></p>
-            <p><input type="submit" class="btn" value="Add this thing to my thing &raquo;" /></p>
+            <p><input type="submit" class="btn btn-info" value="Add this thing to my thing &raquo;" /></p>
           </form>
-      </div>
-      <div class="span4">
-          <h3>Add suggested content</h3>
-          <p>We've hand-selected these completely not-randomly-picked articles because you seem like you would enjoy them.</p>
-          <p>
-              <a href="http://i.imgur.com/Ktbdp.jpg"><img src="http://f.thumbs.redditmedia.com/A79guILmtF7reiaG.jpg" width='70' height='70' alt=""/></a>
-              <a href="http://i.imgur.com/dzPWg.jpg"><img src="http://d.thumbs.redditmedia.com/078bpnv_QCNvJvrW.jpg" width='70' height='70' alt=""/></a>
-              <a href="http://i.imgur.com/qrKkT.jpg"><img src="http://d.thumbs.redditmedia.com/9lSiPiQja-gbQMIQ.jpg" width='70' height='70' alt=""/></a>
-          </p>
       </div>
     </div>
     <hr>
     <div class="row">
       <div class="span12">
+        <div id="no-articles">No articles available. Add one by pasting a url.</div>
         <ul class="thumbnails" id="articles">
         </ul>
       </div>
     </div>
   </div>
-  <hr>
-  <footer><p>&copy; Proving Ground!!!</p></footer>
 </div>
 }
