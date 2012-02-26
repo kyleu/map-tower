@@ -14,8 +14,6 @@ object Newsletter extends Controller {
     contentType match {
       case "url" =>
         val configuration = new Configuration()
-        //configuration.setLocalStoragePath("/tmp/goose")
-        //configuration.setEnableImageFetching(false)
         configuration.imagemagickConvertPath = "/Users/kyle/Projects/Libraries/ImageMagick-6.7.5/bin"
         configuration.imagemagickIdentifyPath = "/Users/kyle/Projects/Libraries/ImageMagick-6.7.5/bin/identify"
         val goose = new Goose(configuration)

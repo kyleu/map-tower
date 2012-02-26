@@ -21,21 +21,21 @@ class Node
 class Way
   constructor: (w) ->
     @latlngs = new Array
-    @tags = n.tags
+    @tags = w.tags
     for i of w.points
       @latlngs.push(new L.LatLng(w.points[i].y, w.points[i].x))
 
   render: (mapView) ->
-    tagMessages = for k, v of w.tags 
+    tagMessages = for k, v of @tags 
       "#{k}: #{v}"
 
-    @way =  new L.Polyline(latlngs, {color: 'red'})
-    @map.addLayer(way)
-    message = "Way (#{w.points.length} points)<br/><br/>\n<strong>#{w.name}</strong><br/>\n#{w.category}<br/><br/>\n"
+    @way =  new L.Polyline(@latlngs, {color: 'red'})
+    mapView.map.addLayer(@way)
+    message = "Way (#{@latlngs.length} points)<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
     message += tagMessages.join("<br/>\n")
-    way.bindPopup(message)
+    @way.bindPopup(message)
     undefined
-    
+
 
 class CustomIcon extends L.Icon
   constructor: (@iconUrl) ->
@@ -52,7 +52,7 @@ wayIcon = new CustomIcon '/assets/images/map/way.png'
 # Handles server communication
 class MapTower
   constructor: (@gameId) ->
-  
+
   nodeCache: {}
   wayCache: {}
   mapView: null
@@ -74,7 +74,7 @@ class MapTower
     @addNode node for node in rsp.nodes
     @addWay way for way in rsp.ways
 
-    addNode: (obj) =>
+  addNode: (obj) =>
     if @nodeCache[obj.osmId]
       console.warn("Encountered cached node on update: ", obj)
     else
