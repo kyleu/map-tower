@@ -1,6 +1,11 @@
+root = this
+
+# Point - x and y are lng and lat doubles.
 class Point
   constructor: (@x, @y) ->
+  latLng: () -> new L.LatLng(@y, @x)
 
+# Node
 class Node
   constructor: (n) ->
     @name = n.name
@@ -9,15 +14,31 @@ class Node
     @tags = n.tags
 
   render: (mapView) ->
-    tagMessages = for k, v of @tags 
-      "#{k}: #{v}"
-    @marker = new L.Marker(new L.LatLng(@loc.y, @loc.x), {icon: if (tagMessages.length > 0) then pointTagsIcon else pointIcon})
-    @message = "lat: #{@loc.y}<br/>lng: #{@loc.x}<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
-    @message += tagMessages.join("<br/>\n")
-    @marker.bindPopup(@message)
-    mapView.map.addLayer(@marker)
+    if(!@marker)
+      @marker = @createMarker()
+      mapView.map.addLayer(@marker)
     undefined
 
+  createMarker: () ->
+    tagMessages = for k, v of @tags 
+      "#{k}: #{v}"
+
+    #ret = new L.Marker(new L.LatLng(@loc.y, @loc.x), {icon: if (tagMessages.length > 0) then pointTagsIcon else pointIcon})
+    
+    circleOptions =
+      color: 'black',
+      fillColor: root.randomColor(),
+      fillOpacity: 0.5
+      
+    ret = new L.CircleMarker(new L.LatLng(@loc.y, @loc.x), circleOptions)
+
+    message = "lat: #{@loc.y}<br/>lng: #{@loc.x}<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
+    message += tagMessages.join("<br/>\n")
+    ret.bindPopup(message)
+    ret
+
+
+# Way
 class Way
   constructor: (w) ->
     @latlngs = new Array
@@ -29,14 +50,14 @@ class Way
     tagMessages = for k, v of @tags 
       "#{k}: #{v}"
 
-    @way =  new L.Polyline(@latlngs, {color: 'red'})
+    @way =  new L.Polyline(@latlngs, {color: root.randomColor()})
     mapView.map.addLayer(@way)
     message = "Way (#{@latlngs.length} points)<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
     message += tagMessages.join("<br/>\n")
     @way.bindPopup(message)
     undefined
 
-
+# Leaflet integration classes
 class CustomIcon extends L.Icon
   constructor: (@iconUrl) ->
   shadowUrl: '/assets/images/map/shadow.png'
@@ -49,30 +70,31 @@ pointIcon = new CustomIcon '/assets/images/map/point.png'
 pointTagsIcon = new CustomIcon '/assets/images/map/point-tags.png'
 wayIcon = new CustomIcon '/assets/images/map/way.png'
 
-# Handles server communication
+# Handles server communication, game state, input, animation, other shizzle. Should break this class up soon.
 class MapTower
-  constructor: (@gameId) ->
+  constructor: (@gameType) ->
+    @gameType.initialCenter = new Point(@gameType.initialCenter.x, @gameType.initialCenter.y)
 
   nodeCache: {}
   wayCache: {}
   mapView: null
 
-  initView: (id, center, zoom) ->
-    @mapView = new MapView(id, center, zoom)
+  initView: (divId) ->
+    @mapView = new MapView(divId, @gameType.initialCenter, @gameType.initialZoom)
     @update(@mapView.map.getBounds())
     @mapView.addTileLayer()
+
+  networkCallback: (rsp) =>
+    @addNode node for node in rsp.nodes
+    @addWay way for way in rsp.ways
 
   update: (b) =>
     ul = b.getNorthWest()
     br = b.getSouthEast()
     params = {"min.x": ul.lng, "min.y": br.lat, "max.x": br.lng, "max.y": ul.lat}
 
-    $.get('/game/' + @gameId + '/data', params, @networkCallback, "json")
+    $.get('/game/' + @gameType.code + '/data', params, @networkCallback, "json")
     undefined
-
-  networkCallback: (rsp) =>
-    @addNode node for node in rsp.nodes
-    @addWay way for way in rsp.ways
 
   addNode: (obj) =>
     if @nodeCache[obj.osmId]
@@ -92,12 +114,11 @@ class MapTower
       way.render(@mapView)
     undefined
 
-
 # Contains all Leaflet interactions, caches map data
 class MapView
   constructor: (id, center, zoom) -> 
     @map = new L.Map('map', { attributionControl: false })
-    @map.setView(center, zoom)
+    @map.setView(center.latLng(), zoom)
     @map.on('click', @onMapClick)
     @map.on('zoomend', @onMapZoom)
 
@@ -118,10 +139,9 @@ class MapView
     undefined
 
   onMapZoom: (e) => 
-    # MapTower.update(@map.getBounds())
-
+    # MapTower.update(@map.getBounds()) 
+    
 $ -> 
-  center = new L.LatLng(33.7612, -84.3856)
-  mapTower = new MapTower("atlanta")
-  mapTower.initView("map", center, 16)
+  mapTower = new MapTower(root.gameType)
+  mapTower.initView("map")
   undefined

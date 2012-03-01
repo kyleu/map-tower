@@ -1,5 +1,22 @@
 @(db: String, collections: Map[String, Int])
 
 @admin.layout() {
-  Datastore stats!!!
+  <div class="section">
+    <h3>@db datastore</h3>
+    <h5>@collections.size collections</h5>
+  </div>
+  <div class="section">
+    <a href="@routes.Admin.wipe(db)">Wipe</a><br/>
+
+    @if(db == "osm") {
+      @for(gt <- maptower.game.GameType.types.values) { 
+        <a href="@routes.Admin.loadOsm(gt.code)">Load @gt.name</a><br/>
+      }
+    }
+
+    @if(db == "map") {
+      <a href="@routes.Admin.convertOsm()">Convert from OSM data</a><br/>
+    }
+
+  </div>
 }

@@ -5,17 +5,19 @@
 # Home page
 GET     /                           controllers.HomePage.index
 
-GET     /game/:id                   controllers.Game.index(id: String)
-GET     /game/:id/osm               controllers.Game.osm(id: String)
-POST    /game/:id/osm               controllers.Game.osm(id: String)
-GET     /game/:id/data              controllers.Game.data(id: String)
-POST    /game/:id/data              controllers.Game.data(id: String)
+GET     /game/:id                   controllers.Gameplay.index(id: String)
+GET     /game/:id/osm               controllers.Gameplay.osm(id: String)
+POST    /game/:id/osm               controllers.Gameplay.osm(id: String)
+GET     /game/:id/data              controllers.Gameplay.data(id: String)
+POST    /game/:id/data              controllers.Gameplay.data(id: String)
 
 GET     /tiles/:z/:x/:y             controllers.Tiles.get(z: Int, x: Int, y: Int)
 
 GET     /admin                      controllers.Admin.index
-GET     /admin/datastore            controllers.Admin.datastore(db: String)
-GET     /admin/rebuild/:db          controllers.Admin.rebuild(db: String)
+GET     /admin/datastore/:db        controllers.Admin.datastore(db: String)
+GET     /admin/wipe/:db             controllers.Admin.wipe(db: String)
+GET     /admin/load/:key            controllers.Admin.loadOsm(key: String)
+GET     /admin/convert              controllers.Admin.convertOsm()
 GET     /admin/logs                 controllers.Admin.logs
 GET     /admin/find                 controllers.Admin.find(db: String, coll: String, filter: Option[String], ops: Option[String])
 

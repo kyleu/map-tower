@@ -5,14 +5,14 @@ import play.api.mvc._
 import controllers.forms._
 import maptower.data._
 import maptower.map.Point
+import maptower.game.GameType
 
 import com.codahale.jerkson.Json._
 
-object Game extends Controller {
-  private val center = Point(-84.3856, 33.7612)
-
+object Gameplay extends Controller {
   def index(id: String) = Action {
-    Ok(views.html.game(center))
+    val gameType = GameType.types(id)
+    Ok(views.html.gameplay(gameType))
   }
 
   def osm(id: String) = Action { implicit request =>

@@ -1,7 +1,8 @@
 @(db: String, coll: String, filter: String, results: Iterator[com.mongodb.casbah.Imports.DBObject])
 
 @admin.layout() {
-    <form action="" class="form-horizontal" style="padding-top:20px;">
+  <div class="section">
+    <form action="" class="form-horizontal">
       <input type="hidden" name="db" value="@db" />
       <input type="hidden" name="coll" value="@coll" />
       <input type="hidden" name="op" value="find" id="op" />
@@ -21,7 +22,11 @@
         <button type="submit" onclick="if(!confirm('Really delete all records matching this query?'))return false;$('#op').val('delete');" class="btn">Delete</button>
       </div>
     </form>
+  </div>
+  <div class="section">
+    <h3>@results.size@if(results.size > 99){+} Results</h3>
     @for(result <- results) {
       <pre>@result.toString()</pre>
     }
+  </div>
 }

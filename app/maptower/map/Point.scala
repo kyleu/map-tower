@@ -22,10 +22,5 @@ case class Point(x: Double, y: Double) {
   def <(other: Point) = x < other.x && y < other.y
   def <=(other: Point) = x <= other.x && y <= other.y
 
-  override val hashCode = 41 * x.hashCode() * 41 * y.hashCode()
-  override def equals(other: Any): Boolean = other match {
-    case that: Point => x == that.x && y == that.y
-    case _ => false
-  }
   override def toString = "[%f, %f]" format (x, y)
 }

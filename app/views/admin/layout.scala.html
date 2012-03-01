@@ -12,10 +12,10 @@
             </p>
         </div>
 
-        @defining(List("Map", "Osm", "Game", "Tile")) { dbs =>
+        @defining(List("map", "osm", "game", "tile")) { dbs =>
             @for(db <- dbs) { 
                 <div class="section">
-                    <h3><a href="">@db Datastore</a></h3>
+                    <h3><a href="@routes.Admin.datastore(db.toLowerCase())">@db</a></h3>
                     <table class="table">
                         <thead>
                             <tr>

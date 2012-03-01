@@ -6,11 +6,9 @@
             <p>@message</p>
         
             <p>
-                @defining(Map("atlanta" -> "Atlanta, GA", "eugene" -> "Eugene, OR")) { gameTypes =>
-                    @for((code, name) <- gameTypes) { 
-                        <a href="@routes.Game.index(code)">@name</a><br/>
-                    }
-                }
+              @for((code, gt) <- maptower.game.GameType.types) { 
+                  <a href="@routes.Gameplay.index(gt.code)">@gt.name</a><br/>
+              }
             </p>
         
             <p>

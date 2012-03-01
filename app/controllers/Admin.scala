@@ -20,17 +20,20 @@ object Admin extends Controller {
     Ok(views.html.admin.datastore(db, dao.getInfo))
   }
 
-  def rebuild(db: String) = Action {
+  def wipe(db: String) = Action {
     val dao = getDao(db)
     dao.wipe
-    db match {
-      case "osm" =>
-        OsmImporter.load(osmDao, "data/atlanta.osm")
-      case "map" =>
-        OsmImporter.convert(osmDao, mapDao)
-      case _ =>
-    }
     dao.ensureIndexes
+    Ok("OK")
+  }
+
+  def loadOsm(key: String) = Action {
+    OsmImporter.load(osmDao, "data/atlanta.osm")
+    Ok("OK")
+  }
+
+  def convertOsm() = Action {
+    OsmImporter.convert(osmDao, mapDao)
     Ok("OK")
   }
 
