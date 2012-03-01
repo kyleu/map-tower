@@ -28,12 +28,14 @@ object Admin extends Controller {
   }
 
   def loadOsm(key: String) = Action {
-    OsmImporter.load(osmDao, "data/atlanta.osm")
+    OsmImporter.load(osmDao, "data/" + key + ".osm")
+    osmDao.ensureIndexes
     Ok("OK")
   }
 
   def convertOsm() = Action {
     OsmImporter.convert(osmDao, mapDao)
+    mapDao.ensureIndexes
     Ok("OK")
   }
 
