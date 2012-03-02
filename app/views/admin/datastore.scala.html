@@ -1,4 +1,4 @@
-@(db: String, collections: Map[String, Int])
+@(db: String, collections: Map[String, Int])(implicit flash: play.api.mvc.Flash)
 
 @admin.layout() {
   <div class="section">
@@ -6,17 +6,20 @@
     <h5>@collections.size collections</h5>
   </div>
   <div class="section">
-    <a href="@routes.Admin.wipe(db)">Wipe</a><br/>
+    <a href="@routes.Datastore.wipe(db)">Wipe</a><br/>
 
     @if(db == "osm") {
       @for(gt <- maptower.game.GameType.types.values) { 
-        <a href="@routes.Admin.loadOsm(gt.code)">Load @gt.name</a><br/>
+        <a href="@routes.Datastore.loadOsm(gt.code)">Load @gt.name</a><br/>
       }
     }
 
     @if(db == "map") {
-      <a href="@routes.Admin.convertOsm()">Convert from OSM data</a><br/>
+      <a href="@routes.Datastore.convertOsm()">Convert from OSM data</a><br/>
     }
 
+    @if(db == "game") {
+      <a href="@routes.Datastore.seed()">Load Seed Data</a><br/>
+    }
   </div>
 }

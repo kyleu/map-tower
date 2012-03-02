@@ -31,7 +31,7 @@ class TileDao(dbName: String, enableTrace: Boolean) extends BaseDao(dbName, enab
     val contentType = uc.getContentType();
     val contentLength = uc.getContentLength();
     if (contentType.startsWith("text/") || contentLength == -1) {
-      throw new java.io.IOException("This is not a binary file.");
+      throw new java.io.IOException("This is not a binary file. %s" format url);
     }
 
     val input = new BufferedInputStream(uc.getInputStream());

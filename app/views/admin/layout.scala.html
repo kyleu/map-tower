@@ -1,21 +1,29 @@
-@()(content: Html)
+@()(content: Html)(implicit flash: play.api.mvc.Flash)
+
+@flashScope() = {
+  @flash.get("success").map { message =>
+    <div class="alert alert-success" style="margin-top:20px;">
+      <a class="close" data-dismiss="alert">x</a>
+      <strong>Done!</strong><br/>
+      @message
+    </div>
+  }
+}
 
 @main("Administration") {
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
         <div class="section">
-            <h3>Administration</h3>
-            <p>
-                <a href="@routes.Admin.index()">Dashboard</a><br/>
-                <a href="@routes.Admin.logs()">Logs</a><br/>
-            </p>
+          <a href="@routes.HomePage.index()">Home</a><br/>
+          <a href="@routes.Admin.index()">Dashboard</a><br/>
+          <a href="@routes.Admin.logs()">Logs</a><br/>
         </div>
 
         @defining(List("map", "osm", "game", "tile")) { dbs =>
             @for(db <- dbs) { 
                 <div class="section">
-                    <h3><a href="@routes.Admin.datastore(db.toLowerCase())">@db</a></h3>
+                    <h3><a href="@routes.Datastore.index(db.toLowerCase())">@db</a></h3>
                     <table class="table">
                         <thead>
                             <tr>
@@ -26,7 +34,7 @@
                         <tbody>
                             @for(collection <- maptower.data.getDao(db toLowerCase).getInfo) {
                                 <tr>
-                                    <td><a href="@routes.Admin.find(db toLowerCase, collection._1, None, None)">@collection._1</a></td>
+                                    <td><a href='@routes.Datastore.query("find", db toLowerCase, collection._1, "{}")'>@collection._1</a></td>
                                     <td>@collection._2</td>
                                 </tr>
                             }
@@ -37,6 +45,7 @@
         }
     </div>
     <div class="span10">
+        @flashScope()
         @content
     </div>
   </div>

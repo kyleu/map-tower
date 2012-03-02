@@ -32,7 +32,7 @@ class MapTests {
 
   @Test
   def wayTests {
-    val w = Way(0, "", "", Seq(zero, one, two, three, four, five))
+    val w = Way(0, "name", "cat", "sub", Seq(zero, one, two, three, four, five))
     assertEquals(6, w.points.size)
 
     val b = new Bounds(two, three)

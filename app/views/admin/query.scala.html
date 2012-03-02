@@ -1,11 +1,11 @@
-@(db: String, coll: String, filter: String, results: Iterator[com.mongodb.casbah.Imports.DBObject])
+@(op:String, db: String, coll: String, filter: String, results: Iterator[Any])(implicit flash: play.api.mvc.Flash)
 
 @admin.layout() {
   <div class="section">
     <form action="" class="form-horizontal">
+      <input type="hidden" name="op" value="find" id="op" />
       <input type="hidden" name="db" value="@db" />
       <input type="hidden" name="coll" value="@coll" />
-      <input type="hidden" name="op" value="find" id="op" />
       <fieldset>
         <legend>@db/@coll</legend>
         <div class="control-group">
@@ -18,13 +18,14 @@
       </fieldset>
       <div class="form-actions">
         <button type="submit" onclick="$('#op').val('find');" class="btn btn-primary">Find</button>
+        <button type="submit" onclick="$('#op').val('distinct');" class="btn">Distinct</button>
         <button type="submit" onclick="$('#op').val('insert');" class="btn">Insert</button>
         <button type="submit" onclick="if(!confirm('Really delete all records matching this query?'))return false;$('#op').val('delete');" class="btn">Delete</button>
       </div>
     </form>
   </div>
   <div class="section">
-    <h3>@results.size@if(results.size > 99){+} Results</h3>
+    <h3>@op: @filter</h3>
     @for(result <- results) {
       <pre>@result.toString()</pre>
     }

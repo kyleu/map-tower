@@ -3,7 +3,7 @@ package maptower.data
 import org.junit.Test
 import org.junit.Assert._
 import com.mongodb.casbah.Imports._
-import maptower.map.osm.OsmImporter
+import maptower.map.osm.{ OsmImporter, OsmConverter }
 
 class OsmDataTests {
   maptower.data.dbNamePrefix = "test"
@@ -11,11 +11,11 @@ class OsmDataTests {
   @Test
   def xmlLoad {
     osmDao.wipe
-    OsmImporter.load(osmDao, "data/eugene.osm")
+    OsmImporter("data/eugene.osm")
     osmDao.ensureIndexes
 
     mapDao.wipe
-    OsmImporter.convert(osmDao, mapDao)
+    OsmConverter()
     mapDao.ensureIndexes
   }
 }

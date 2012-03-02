@@ -10,8 +10,9 @@ class Node
   constructor: (n) ->
     @name = n.name
     @category = n.category
+    @subcategory = n.subcategory
     @loc = n.loc
-    @tags = n.tags
+    @note = n.note
 
   render: (mapView) ->
     if(!@marker)
@@ -20,20 +21,14 @@ class Node
     undefined
 
   createMarker: () ->
-    tagMessages = for k, v of @tags 
-      "#{k}: #{v}"
-
     #ret = new L.Marker(new L.LatLng(@loc.y, @loc.x), {icon: if (tagMessages.length > 0) then pointTagsIcon else pointIcon})
-    
     circleOptions =
       color: 'black',
       fillColor: root.randomColor(),
       fillOpacity: 0.5
-      
     ret = new L.CircleMarker(new L.LatLng(@loc.y, @loc.x), circleOptions)
-
     message = "lat: #{@loc.y}<br/>lng: #{@loc.x}<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
-    message += tagMessages.join("<br/>\n")
+    message += @note.split(",").join("<br/>\n")
     ret.bindPopup(message)
     ret
 
@@ -41,21 +36,27 @@ class Node
 # Way
 class Way
   constructor: (w) ->
+    @name = w.name
+    @category = w.category
+    @subcategory = w.subcategory
+    @note = w.note
+
     @latlngs = new Array
-    @tags = w.tags
     for i of w.points
       @latlngs.push(new L.LatLng(w.points[i].y, w.points[i].x))
 
   render: (mapView) ->
-    tagMessages = for k, v of @tags 
-      "#{k}: #{v}"
-
-    @way =  new L.Polyline(@latlngs, {color: root.randomColor()})
-    mapView.map.addLayer(@way)
-    message = "Way (#{@latlngs.length} points)<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
-    message += tagMessages.join("<br/>\n")
-    @way.bindPopup(message)
+    if(!@way)
+      @way = @createWay()
+      mapView.map.addLayer(@way)
     undefined
+
+  createWay: () ->
+    ret =  new L.Polyline(@latlngs, {color: root.randomColor()})
+    message = "Way (#{@latlngs.length} points)<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
+    message += @note.split(",").join("<br/>\n")
+    ret.bindPopup(message)
+    ret
 
 # Leaflet integration classes
 class CustomIcon extends L.Icon
