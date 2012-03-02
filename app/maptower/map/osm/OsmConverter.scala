@@ -36,7 +36,7 @@ object OsmNodeConverter {
   private val ignoredNodeOsmTags = Array("highway", "exit_to", "ref", "power", "source", "name", "bicycle", "crossing", "ped_buffer", "railway", "FIXME", "barrier", "ele", "gnis:Class", "gnis:County", "gnis:County_num", "gnis:ST_alpha", "gnis:ST_num", "gnis:id", "import_uuid", "is_in", "place", "census:population", "population", "created_by", "amenity", "old_name", "denomination", "religion", "addr:state", "gnis:county_id", "gnis:created", "gnis:edited", "gnis:feature_id", "leisure", "tourism", "natural", "landuse", "man_made", "waterway", "gnis:county_name", "building", "aeroway", "gnis:feature_type", "source_ref", "note", "operator", "url", "addr:housenumber", "addr:street", "shop", "alt_name", "cuisine", "website", "emergency", "traffic_calming", "access", "fuel:lpg", "phone", "tower:type", "addr:housename", "addr:postcode", "designation")
 
   def apply(n: OsmNode) = {
-    val extractor = new Extractor(n.tags)
+    val extractor = TagExtractor(n.tags)
     new Node(n.osmId, extractor.name.get, extractor.category, extractor.subcategory, n.loc, extractor.note)
   }
 }
@@ -71,48 +71,51 @@ object OsmWayConverter {
     val nodeMap = nodes.toMap
     val points = w.nodeIds flatMap (id => nodeMap.get(id))
 
-    val extractor = new Extractor(w.tags)
+    val extractor = TagExtractor(w.tags)
 
     new Way(w.osmId, extractor.name.getOrElse("Unnamed"), extractor.category, extractor.subcategory, points, extractor.note)
   }
 }
 
-private object Extractor {
+private object TagExtractor {
   val ignoredPrefixes = Array(
     "addr:state", "ele", "gnis:import_uuid", "created_by",
     "gnis:feature_id", "gnis:county_name", "gnis:ST_alpha", "gnis:ST_num", "gnis:County", "import_uuid", "gnis:id", "gnis:County_num")
 
   val categoryPrefixPriorities = Map("shop" -> 10, "man_made" -> 10, "tourism" -> 10, "highway" -> 10,
-    "place" -> 10, "aeroway" -> 10, "railway" -> 10, "natural" -> 10, "building" -> 3, "leisure" -> 10, "landuse" -> 5,
-    "waterway" -> 10, "historic" -> 10, "sport" -> 10, "amenity" -> 1)
+    "place" -> 10, "aeroway" -> 10, "railway" -> 10, "natural" -> 10, "building" -> 3, "leisure" -> 9, "landuse" -> 5,
+    "waterway" -> 10, "historic" -> 8, "sport" -> 10, "amenity" -> 1)
 
   def priority(category: String) = categoryPrefixPriorities(category)
   val categoryValuePrefixes = "tourism,amenity,leisure,railway".split(",")
+
+  def apply(tags: Map[String, String]) = {
+    var name = tags.get("name")
+    var category = ""
+    var subcategory = ""
+    val unusedTags = collection.mutable.HashMap[String, String]()
+    var currentPriority: Int = -1
+
+    tags foreach {
+      case (k, v) if (ignoredPrefixes.contains(k)) => //noop
+      case (k, v) if (k == "name") => name = Some(v)
+      case (k, v) if (categoryPrefixPriorities.keySet.contains(k)) => {
+        priority(k) match {
+          case (newPriority) if (currentPriority < newPriority) => {
+            currentPriority = newPriority
+            category = k
+            subcategory = v
+          }
+          case (newPriority) if (currentPriority > newPriority) => // no-op
+          case (newPriority) => println("Categories %s and %s share priority %s." format ((category, subcategory), (k, v), newPriority))
+        }
+      }
+      case (k, v) => unusedTags += (k -> v)
+    }
+    new ExtractedTags(name, category, subcategory, unusedTags.toMap)
+  }
 }
 
-// Mutable and hacky. Don't care.
-class Extractor(tags: Map[String, String]) {
-  var name = tags.get("name")
-  var category = ""
-  var subcategory = ""
-  val unusedTags = collection.mutable.HashMap[String, String]()
+case class ExtractedTags(name: Option[String], category: String, subcategory: String, unusedTags: Map[String, String]) {
   lazy val note = unusedTags map { case (k, v) => k + " => " + v } mkString ", "
-
-  private var currentPriority: Int = -1
-  tags foreach {
-    case (k, v) if (Extractor.ignoredPrefixes.contains(k)) => //noop
-    case (k, v) if (Extractor.categoryPrefixPriorities.keySet.contains(k)) => {
-      Extractor.priority(k) match {
-        case (newPriority) if (currentPriority < newPriority) => {
-          currentPriority = newPriority
-          category = k
-          subcategory = v
-        }
-        case (newPriority) if (currentPriority > newPriority) => // no-op
-        case (newPriority) => println("Categories %s and %s share priority %s." format ((category, subcategory), (k, v), newPriority))
-      }
-    }
-    case (k, v) if (k == "name") => name = Some(v)
-    case (k, v) => unusedTags += (k -> v)
-  }
 }
