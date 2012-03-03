@@ -82,9 +82,9 @@ private object TagExtractor {
     "addr:state", "ele", "gnis:import_uuid", "created_by",
     "gnis:feature_id", "gnis:county_name", "gnis:ST_alpha", "gnis:ST_num", "gnis:County", "import_uuid", "gnis:id", "gnis:County_num")
 
-  val categoryPrefixPriorities = Map("shop" -> 10, "man_made" -> 10, "tourism" -> 10, "highway" -> 10,
-    "place" -> 10, "aeroway" -> 10, "railway" -> 10, "natural" -> 10, "building" -> 3, "leisure" -> 9, "landuse" -> 5,
-    "waterway" -> 10, "historic" -> 8, "sport" -> 10, "amenity" -> 1)
+  val categoryPrefixPriorities = Map("shop" -> 10, "man_made" -> 10, "tourism" -> 10, "highway" -> 9,
+    "place" -> 10, "aeroway" -> 9, "railway" -> 8, "natural" -> 10, "building" -> 3, "leisure" -> 9, "landuse" -> 5,
+    "waterway" -> 11, "historic" -> 8, "sport" -> 11, "amenity" -> 1)
 
   def priority(category: String) = categoryPrefixPriorities(category)
   val categoryValuePrefixes = "tourism,amenity,leisure,railway".split(",")
