@@ -19,5 +19,56 @@
 
 @main("MapTower Test", headerContent) {
   <div id="map"></div>
-  <div class="game-info">XXXXXXXXX</div>
+  <div class="panel" id="info-panel">
+    <h3>@gameType.name</h3>
+    $<span class="currencyAmount">0</span><br/>
+    ...
+  </div>
+  <div class="panel" id="actions-panel">
+      <button class="btn" value="zoomin" title="Zoom In">+</button>
+      <button class="btn" value="zoomout" title="Zoom Out">-</button>
+      <button class="btn" value="help" title="Help">?</button>
+  </div>
+  <div class="panel" id="debug-panel">
+    <h4>Debug Actions</h4>
+    <div>
+      <button class="btn" value="random" title="Who knows? Click it and find out!">Random</button>
+      <button class="btn" value="clear" title="Clears the map of, well, everything.">Clear Map</button>
+      <button class="btn" value="reload" title="Reload">Reload</button>
+    </div>
+  </div>
+  <div class="panel" id="options-panel">
+    <h4>Theme</h4>
+    <div class="theme controls">
+      <label class="radio">
+        <input type="radio" name="theme" value="standard" checked="checked">
+        Standard
+      </label>
+      <label class="radio">
+        <input type="radio" name="theme" value="dark">
+        Dark
+      </label>
+      <label class="radio">
+        <input type="radio" name="theme" value="sat">
+        Satellite
+      </label>
+    </div>
+    <h4>Options</h4>
+    <div>
+      <div class="options controls">
+        <label class="checkbox">
+          <input type="checkbox" name="option" value="rainbow" checked="checked">
+          Rainbow Mode
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="option" value="draw-path" checked="checked">
+          Draw Paths
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="option" value="draw-bg" checked="checked">
+          Draw Background
+        </label>
+      </div>
+    </div>
+  </div>
 }

@@ -82,19 +82,15 @@ class MapTower
 
   clear: () ->
     # clear, remove nodes/ways, reset game
-  
+
   initView: (divId) ->
     @mapView = new MapView(divId, @gameType.initialCenter, @gameType.initialZoom)
     @update(@mapView.map.getBounds())
     @mapView.addTileLayer()
 
+    @infoPanel = new InfoPanel()
     @debugPanel = new DebugPanel()
-    # register event to call debug panel.
-    @mapView.addPanel(@debugPanel)
-
-    @togglePanel = new TogglePanel()
-    # register event to be called from toggle panel.
-    @mapView.addPanel(@togglePanel)
+    @optionsPanel = new OptionsPanel()
 
   networkCallback: (rsp) =>
     @addNode node for node in rsp.nodes
@@ -129,7 +125,7 @@ class MapTower
 # Contains all Leaflet interactions, caches map data
 class MapView
   constructor: (id, center, zoom) -> 
-    @map = new L.Map('map', { attributionControl: false })
+    @map = new L.Map('map', { attributionControl: false, zoomControl: false })
     @map.setView(center.latLng(), zoom)
     @map.on('click', @onMapClick)
     @map.on('zoomend', @onMapZoom)
@@ -142,9 +138,6 @@ class MapView
     })
     @map.addLayer(tileLayer)
 
-  addPanel: (panel) =>
-    console.log(panel + " added!")
-
   onMapClick: (e) =>
     latlngStr = 'lat: ' + e.latlng.lat.toFixed(4) + '<br/>lng: ' + e.latlng.lng.toFixed(4)
     popup = new L.Popup()
@@ -155,12 +148,38 @@ class MapView
 
   onMapZoom: (e) => 
     # MapTower.update(@map.getBounds()) 
-    
-# Game panels
-class DebugPanel
 
-class TogglePanel
-    
+# Game panels
+class Panel
+  constructor: (@id) -> 
+    @content = $("#" + @id + "-panel")
+
+    callback = (e) =>
+      msg = e.srcElement.value
+      console.log("Reacting to #{msg} from #{@id}:", e)
+      @react msg
+    @content.find("button").click(callback)
+    @content.find("input").click(callback)
+
+  react: (msg) =>
+    console.log "Unhandled message #{msg} from #{@id}."
+
+class InfoPanel extends Panel
+  constructor: () -> 
+    super "info"
+
+class ActionsPanel extends Panel
+  constructor: () -> 
+    super "actions"
+
+class DebugPanel extends Panel
+  constructor: () -> 
+    super "debug"
+
+class OptionsPanel extends Panel
+  constructor: () -> 
+    super "options"
+
 $ -> 
   mapTower = new MapTower(root.gameType)
   mapTower.initView("map")
