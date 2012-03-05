@@ -32,7 +32,6 @@ class Node
     ret.bindPopup(message)
     ret
 
-
 # Way
 class Way
   constructor: (w) ->
@@ -58,19 +57,6 @@ class Way
     ret.bindPopup(message)
     ret
 
-# Leaflet integration classes
-class CustomIcon extends L.Icon
-  constructor: (@iconUrl) ->
-  shadowUrl: '/assets/images/map/shadow.png'
-  iconSize: new L.Point(38, 95)
-  shadowSize: new L.Point(68, 95)
-  iconAnchor: new L.Point(22, 94)
-  popupAnchor: new L.Point(-3, -76)
-
-pointIcon = new CustomIcon '/assets/images/map/point.png'
-pointTagsIcon = new CustomIcon '/assets/images/map/point-tags.png'
-wayIcon = new CustomIcon '/assets/images/map/way.png'
-
 # Handles server communication, game state, input, animation, other shizzle. Should break this class up soon.
 class MapTower
   constructor: (@gameType) ->
@@ -88,9 +74,10 @@ class MapTower
     @update(@mapView.map.getBounds())
     @mapView.addTileLayer()
 
-    @infoPanel = new InfoPanel()
-    @debugPanel = new DebugPanel()
-    @optionsPanel = new OptionsPanel()
+    @infoPanel = new InfoPanel(@)
+    @actionsPanel = new ActionsPanel(@)
+    @debugPanel = new DebugPanel(@)
+    @optionsPanel = new OptionsPanel(@)
 
   networkCallback: (rsp) =>
     @addNode node for node in rsp.nodes
@@ -130,6 +117,9 @@ class MapView
     @map.on('click', @onMapClick)
     @map.on('zoomend', @onMapZoom)
 
+  zoomIn: () => @map.zoomIn()
+  zoomOut: () => @map.zoomOut()
+
   addTileLayer: () =>
     # tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/998/256/{z}/{x}/{y}.png'
     tileUrl = '/tiles/{z}/{x}/{y}'
@@ -148,6 +138,18 @@ class MapView
 
   onMapZoom: (e) => 
     # MapTower.update(@map.getBounds()) 
+
+class CustomIcon extends L.Icon
+  constructor: (@iconUrl) ->
+  shadowUrl: '/assets/images/map/shadow.png'
+  iconSize: new L.Point(38, 95)
+  shadowSize: new L.Point(68, 95)
+  iconAnchor: new L.Point(22, 94)
+  popupAnchor: new L.Point(-3, -76)
+
+pointIcon = new CustomIcon '/assets/images/map/point.png'
+pointTagsIcon = new CustomIcon '/assets/images/map/point-tags.png'
+wayIcon = new CustomIcon '/assets/images/map/way.png'
 
 # Game panels
 class Panel
@@ -169,8 +171,16 @@ class InfoPanel extends Panel
     super "info"
 
 class ActionsPanel extends Panel
-  constructor: () -> 
+  constructor: (@mt) -> 
     super "actions"
+
+  react: (msg) =>
+    if(msg == "zoom-in")
+      @mt.mapView.zoomIn()
+    else if(msg == "zoom-out")
+      @mt.mapView.zoomOut()
+    else
+      super.react(msg)
 
 class DebugPanel extends Panel
   constructor: () -> 
