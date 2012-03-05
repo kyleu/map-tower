@@ -78,9 +78,8 @@ object OsmWayConverter {
 }
 
 private object TagExtractor {
-  val ignoredPrefixes = Array(
-    "addr:state", "ele", "gnis:import_uuid", "created_by",
-    "gnis:feature_id", "gnis:county_name", "gnis:ST_alpha", "gnis:ST_num", "gnis:County", "import_uuid", "gnis:id", "gnis:County_num")
+  val ignoreKeys = Array("addr:state", "ele", "import_uuid", "created_by")
+  val ignoredKeyPrefixes = Array("gnis:", "tiger:")
 
   val categoryPrefixPriorities = Map("shop" -> 10, "man_made" -> 10, "tourism" -> 10, "highway" -> 9,
     "place" -> 10, "aeroway" -> 9, "railway" -> 8, "natural" -> 10, "building" -> 3, "leisure" -> 9, "landuse" -> 5,
@@ -97,7 +96,8 @@ private object TagExtractor {
     var currentPriority: Int = -1
 
     tags foreach {
-      case (k, v) if (ignoredPrefixes.contains(k)) => //noop
+      case (k, v) if (ignoredKeyPrefixes.contains(k)) => //noop
+      case (k, v) if (ignoredKeyPrefixes.find(x => k.startsWith(x)).isDefined) => //noop
       case (k, v) if (k == "name") => name = Some(v)
       case (k, v) if (categoryPrefixPriorities.keySet.contains(k)) => {
         priority(k) match {
