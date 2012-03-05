@@ -27,7 +27,7 @@ class Node
       fillColor: root.randomColor(),
       fillOpacity: 0.5
     ret = new L.CircleMarker(new L.LatLng(@loc.y, @loc.x), circleOptions)
-    message = "lat: #{@loc.y}<br/>lng: #{@loc.x}<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
+    message = "lat: #{@loc.y}<br/>lng: #{@loc.x}<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/>\n#{@subcategory}<br/><br/>\n"
     message += @note.split(",").join("<br/>\n")
     ret.bindPopup(message)
     ret
@@ -53,7 +53,7 @@ class Way
 
   createWay: () ->
     ret =  new L.Polyline(@latlngs, {color: root.randomColor()})
-    message = "Way (#{@latlngs.length} points)<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/><br/>\n"
+    message = "Way (#{@latlngs.length} points)<br/><br/>\n<strong>#{@name}</strong><br/>\n#{@category}<br/>\n#{@subcategory}<br/><br/>\n"
     message += @note.split(",").join("<br/>\n")
     ret.bindPopup(message)
     ret
@@ -80,10 +80,21 @@ class MapTower
   wayCache: {}
   mapView: null
 
+  clear: () ->
+    # clear, remove nodes/ways, reset game
+  
   initView: (divId) ->
     @mapView = new MapView(divId, @gameType.initialCenter, @gameType.initialZoom)
     @update(@mapView.map.getBounds())
     @mapView.addTileLayer()
+
+    @debugPanel = new DebugPanel()
+    # register event to call debug panel.
+    @mapView.addPanel(@debugPanel)
+
+    @togglePanel = new TogglePanel()
+    # register event to be called from toggle panel.
+    @mapView.addPanel(@togglePanel)
 
   networkCallback: (rsp) =>
     @addNode node for node in rsp.nodes
@@ -131,6 +142,9 @@ class MapView
     })
     @map.addLayer(tileLayer)
 
+  addPanel: (panel) =>
+    console.log(panel + " added!")
+
   onMapClick: (e) =>
     latlngStr = 'lat: ' + e.latlng.lat.toFixed(4) + '<br/>lng: ' + e.latlng.lng.toFixed(4)
     popup = new L.Popup()
@@ -141,6 +155,11 @@ class MapView
 
   onMapZoom: (e) => 
     # MapTower.update(@map.getBounds()) 
+    
+# Game panels
+class DebugPanel
+
+class TogglePanel
     
 $ -> 
   mapTower = new MapTower(root.gameType)
