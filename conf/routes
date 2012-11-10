@@ -23,8 +23,5 @@ GET     /admin/convert              controllers.Datastore.convertOsm()
 GET     /admin/seed                 controllers.Datastore.seed()
 GET     /admin/query                controllers.Datastore.query(op:String, db: String, coll: String, filter: String)
 
-GET     /newsletter                 controllers.Newsletter.index
-GET     /newsletter/add             controllers.Newsletter.add(contentType: String, url: String)
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

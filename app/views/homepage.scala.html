@@ -4,16 +4,13 @@
     <div class="container">
         <div class="span12" style="padding:20px;">
             <p>@message</p>
-        
+
             <p>
               @for((code, gt) <- maptower.game.GameType.types) { 
                   <a href="@routes.Gameplay.index(gt.code)">@gt.name</a><br/>
               }
             </p>
-        
-            <p>
-                <a href="@routes.Newsletter.index()">Newsletter Test</a><br/>
-            </p>
+
             <p>
                 <a href="@routes.Admin.index()">Administration</a><br/>
             </p>
