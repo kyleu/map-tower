@@ -7,7 +7,7 @@
 
             <p>
               @for((code, gt) <- maptower.game.GameType.types) { 
-                  <a href="@routes.Gameplay.index(gt.code)">@gt.name</a><br/>
+                  <a href='@routes.Gameplay.index(gt.code, "Kyle")'>@gt.name</a><br/>
               }
             </p>
 

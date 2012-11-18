@@ -1,18 +1,26 @@
 package controllers
 
+import com.codahale.jerkson.Json.generate
+
 import play.api._
 import play.api.mvc._
-import controllers.forms._
-import maptower.data._
-import maptower.map.Point
-import maptower.game.GameType
 
-import com.codahale.jerkson.Json._
+import play.api.libs.json._
+import play.api.libs.iteratee._
+
+import controllers.forms.Forms
+import maptower.data.{ osmDao, mapDao }
+import maptower.game.{ Room, GameType }
+import play.api.libs.json.JsValue
+import play.api.mvc.{ WebSocket, Controller, Action }
+
+import akka.actor._
+import akka.util.duration._
 
 object Gameplay extends Controller {
-  def index(id: String) = Action {
+  def index(id: String, username: String) = Action { implicit request =>
     val gameType = GameType.types(id)
-    Ok(views.html.gameplay(gameType))
+    Ok(views.html.gameplay(gameType, username))
   }
 
   def osm(id: String) = Action { implicit request =>
@@ -33,5 +41,9 @@ object Gameplay extends Controller {
     val ways = mapDao.waysIntersecting(bounds, true) toSeq
     val rsp = generate(Map("nodes" -> nodes, "ways" -> ways))
     Ok(rsp).as("application/json")
+  }
+
+  def events(id: String, username: String) = WebSocket.async[JsValue] { request =>
+    Room.join(username)
   }
 }

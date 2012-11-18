@@ -13,11 +13,16 @@
 @main("Administration") {
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span2">
+    <div class="span3">
         <div class="section">
           <a href="@routes.HomePage.index()">Home</a><br/>
           <a href="@routes.Admin.index()">Dashboard</a><br/>
           <a href="@routes.Admin.logs()">Logs</a><br/>
+        </div>
+
+        <div class="section">
+          <a href='@routes.Datastore.rebuild("eugene")'>Rebuild Eugene</a><br/>
+          <a href='@routes.Datastore.rebuild("atlanta")'>Rebuild Atlanta</a><br/>
         </div>
 
         @defining(List("map", "osm", "game", "tile")) { dbs =>
@@ -44,7 +49,7 @@
             }
         }
     </div>
-    <div class="span10">
+    <div class="span9">
         @flashScope()
         @content
     </div>
