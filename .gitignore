@@ -2,6 +2,7 @@ project/target/
 tmp/
 bin/
 target/
+.target/
 logs/
 repository/
 dist/
