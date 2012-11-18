@@ -8,7 +8,7 @@ object Way {
   val empty = new Way(0, "The Middle of Nowhere", "unknown", "unknown", Seq())
 
   def apply(obj: Obj): Way = {
-    var pointsObjList: ObjList = obj.as[BasicDBList]("points")
+    var pointsObjList: ObjList = obj.as[MongoDBList]("points")
     var points = pointsObjList map (p => Point(p.asInstanceOf[BasicDBList]))
     new Way(obj.as[Int]("osmId"), obj.as[String]("name"), obj.as[String]("category"), obj.as[String]("subcategory"), points, obj.as[String]("note"))
   }

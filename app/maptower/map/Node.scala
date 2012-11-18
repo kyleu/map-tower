@@ -8,7 +8,7 @@ object Node {
   val empty = new Node(0, "The Middle of Nowhere", "unknown", "unknown", new Point(0, 0))
 
   def apply(obj: Obj): Node = {
-    var loc = obj.as[BasicDBList]("loc")
+    var loc = obj.as[MongoDBList]("loc")
     new Node(obj.as[Int]("osmId"), obj.as[String]("name"), obj.as[String]("category"), obj.as[String]("subcategory"), Point(loc), obj.as[String]("note"))
   }
 }

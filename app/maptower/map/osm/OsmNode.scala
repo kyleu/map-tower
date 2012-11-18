@@ -9,7 +9,7 @@ object OsmNode {
   val empty = new OsmNode(0, new Point(0, 0))
 
   def apply(obj: Obj): OsmNode = {
-    var loc = obj.as[BasicDBList]("loc")
+    var loc = obj.as[MongoDBList]("loc")
     new OsmNode(obj.as[Int]("osmId"), Point(loc), OsmTags(obj))
   }
 }

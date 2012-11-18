@@ -10,7 +10,7 @@ object OsmRelation {
   def apply() = empty
 
   def apply(obj: Obj) = {
-    val memberObjs: ObjList = obj.as[BasicDBList]("members")
+    val memberObjs: ObjList = obj.as[MongoDBList]("members")
     val members = memberObjs map { o =>
       val obj: Obj = o.asInstanceOf[BasicDBObject]
       new OsmRelationMember(obj.as[String]("type"), obj.as[Int]("ref"), obj.as[String]("role"))

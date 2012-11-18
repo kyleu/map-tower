@@ -11,7 +11,7 @@ object OsmWay {
   def apply() = empty
 
   def apply(obj: Obj) = {
-    val nodeRefs: ObjList = obj.as[BasicDBList]("nodes")
+    val nodeRefs: ObjList = obj.as[MongoDBList]("nodes")
     val nodeIds = nodeRefs.map(_.asInstanceOf[Int])
     new OsmWay(obj.as[Int]("osmId"), nodeIds, OsmTags(obj))
   }
