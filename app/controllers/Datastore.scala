@@ -16,8 +16,20 @@ object Datastore extends Controller {
     Ok(views.html.admin.datastore(db, dao.getInfo))
   }
 
+  def rebuild(key: String) = Action { implicit request =>
+    wipe("osm")
+    wipe("map")
+    wipe("game")
+    loadOsm(key)
+    convertOsm()
+    seed()
+
+    Redirect(controllers.routes.Admin.index()).flashing("success" -> "Rebuilt for \"%s\".".format(key));
+  }
+
   def wipe(db: String) = Action { implicit request =>
     val dao = getDao(db)
+    dao.mongoDb.dropDatabase()
     dao.wipe
     dao.ensureIndexes
     Redirect(controllers.routes.Datastore.index(db)).flashing("success" -> (db + " wiped."));
