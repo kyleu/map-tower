@@ -1,0 +1,101 @@
+html, body {
+  height: 100%;
+}
+
+h3, h4 {
+  margin: 0;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.panel {
+  border: solid 2px grey;
+  border-radius: 10px;
+  background-color: white;
+  background-color: rgba(255, 255, 255, 0.90);
+  padding:10px;
+}
+
+#info-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+#actions-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+#debug-panel {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+#log-panel {
+  position: absolute;
+  bottom: 20px;
+  right: 190px;
+}
+
+#options-panel {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.section {
+  background-color: #fff;
+  border:1px solid #ccc;
+  border-radius: 6px;
+  margin:20px 0;
+  padding:10px;
+}
+
+#talk {
+  margin-top: 5px;
+  width: 495px;
+}
+
+#messages {
+  width: 500px;
+  height: 168px;
+  overflow: auto;
+  position: relative;
+}
+
+.message {
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.message span {
+  width: 70px;
+  overflow: hidden;
+  text-align: right;
+  font-weight: bold;
+  margin-right: 5px;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  top: -1px;
+}
+
+.message p {
+  display: inline-block;
+  margin: 0;
+}
+
+.message.me {
+  background: #FFC;
+}
+
+.message.join,.message.quit {
+  background: #D9E7FB;
+}
