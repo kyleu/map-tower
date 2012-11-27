@@ -41,6 +41,16 @@ Class.extend = function(prop) {
 };
 
 var Util = {
+  getColor: function(cat, subcat) {
+    var key = cat + ":" + subcat;
+    var color = Util.nodeColors[key];
+    if(color == null) {
+      color = Util.randomColor();
+      Util.nodeColors[key] = color;
+    }
+    return color;
+  },
+
   randomColor: function() {
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';
@@ -48,7 +58,9 @@ var Util = {
         color += letters[Math.round(Math.random() * 15)];
     }
     return color;
-  }
+  },
+
+  nodeColors: {}
 }
 
 // Point - x and y are lng and lat doubles.
@@ -82,7 +94,7 @@ var Node = Class.extend({
   createMarker: function() {
     var circleOptions = {
       color: 'black',
-      fillColor: Util.randomColor(),
+      fillColor: Util.getColor(this.category, this.subcategory),
       fillOpacity: 0.5
     };
     var ret = new L.CircleMarker(new L.LatLng(this.loc.y, this.loc.x), circleOptions);
@@ -115,7 +127,7 @@ var Way = Class.extend({
   },
 
   createWay: function() {
-    var ret = new L.Polyline(this.latlngs, {color: Util.randomColor()});
+    var ret = new L.Polyline(this.latlngs, {color: Util.getColor(this.category, this.subcategory)});
     message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory + "<br/><br/>\n";
     message += this.note.split(",").join("<br/>\n");
     ret.bindPopup(message);
@@ -218,7 +230,7 @@ var MapView = Class.extend({
     var popup = new L.Popup();
     popup.setLatLng(e.latlng);
     popup.setContent(latlngStr);
-    this.map.openPopup(popup);
+    this.openPopup(popup);
   },
 
   onMapZoom: function(e) { 
