@@ -7,12 +7,11 @@ import akka.util.Timeout
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.libs.iteratee.Iteratee
-import play.api.libs.json.JsValue
 import play.api.Logger
 
 object Robot {
   def apply(gameRoom: ActorRef) {
-    val loggerIteratee = Iteratee.foreach[JsValue](event => Logger("robot").info(event.toString))
+    val loggerIteratee = Iteratee.foreach[String](event => Logger("robot").info(event))
 
     implicit val timeout = Timeout(1 second)
 

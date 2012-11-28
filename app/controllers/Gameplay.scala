@@ -3,10 +3,9 @@ package controllers
 import com.codahale.jerkson.Json.generate
 
 import controllers.forms.Forms
-import maptower.data.{ osmDao, mapDao }
-import maptower.game.{ Room, GameType }
-import play.api.libs.json.JsValue
-import play.api.mvc.{ WebSocket, Controller, Action }
+import maptower.data.{osmDao, mapDao}
+import maptower.game.{Room, GameType}
+import play.api.mvc.{WebSocket, Controller, Action}
 
 object Gameplay extends Controller {
   def index(id: String, username: String) = Action { implicit request =>
@@ -36,7 +35,7 @@ object Gameplay extends Controller {
     Ok(rsp).as("application/json")
   }
 
-  def events(id: String, username: String) = WebSocket.async[JsValue] { request =>
+  def events(id: String, username: String) = WebSocket.async[String] { request =>
     Room.join(username)
   }
 }

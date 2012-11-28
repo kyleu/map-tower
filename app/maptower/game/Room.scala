@@ -4,9 +4,10 @@ import akka.actor._
 import akka.util.duration._
 
 import play.api._
-import play.api.libs.json._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent._
+
+import com.codahale.jerkson.Json.generate
 
 import akka.util.Timeout
 import akka.pattern.ask
@@ -23,12 +24,12 @@ object Room {
     roomActor
   }
 
-  def join(username: String): Promise[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
+  def join(username: String): Promise[(Iteratee[String, _], Enumerator[String])] = {
     (default ? Join(username)).asPromise.map {
       case Connected(enumerator) =>
         // Create an Iteratee to consume the feed
-        val iteratee = Iteratee.foreach[JsValue] { event =>
-          default ! Talk(username, (event \ "text").as[String])
+        val iteratee = Iteratee.foreach[String] { event =>
+          default ! Talk(username, event)
         }.mapDone { _ =>
           default ! Quit(username)
         }
@@ -36,21 +37,21 @@ object Room {
       case CannotConnect(error) =>
         // Connection error
         // A finished Iteratee sending EOF
-        val iteratee = Done[JsValue, Unit]((), Input.EOF)
+        val iteratee = Done[String, Unit]((), Input.EOF)
         // Send an error and close the socket
-        val enumerator = Enumerator[JsValue](JsObject(Seq("error" -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
+        val enumerator = Enumerator[String](error).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee, enumerator)
     }
   }
 }
 
 class Room extends Actor {
-  var members = Map.empty[String, PushEnumerator[JsValue]]
+  var members = Map.empty[String, PushEnumerator[String]]
 
   def receive = {
     case Join(username) => {
       // Create an Enumerator to write to this socket
-      val channel = Enumerator.imperative[JsValue](onStart = self ! NotifyJoin(username))
+      val channel = Enumerator.imperative[String](onStart = self ! NotifyJoin(username))
       if (members.contains(username)) {
         sender ! CannotConnect("This username is already in use.")
       } else {
@@ -78,16 +79,12 @@ class Room extends Actor {
   }
 
   def notifyAll(kind: String, user: String, text: String) {
-    val msg = JsObject(
-      Seq(
-        "kind" -> JsString(kind),
-        "user" -> JsString(user),
-        "message" -> JsString(text),
-        "members" -> JsArray(
-          members.keySet.toList.map(JsString)
-        )
-      )
-    )
+    val msg = generate(Map(
+      "kind" -> kind,
+      "user" -> user,
+      "message" -> text,
+      "members" -> members.keySet.toList
+    ))
     members.foreach {
       case (_, channel) => channel.push(msg)
     }
