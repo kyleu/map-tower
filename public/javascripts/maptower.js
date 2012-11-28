@@ -60,7 +60,9 @@ var Util = {
     return color;
   },
 
-  nodeColors: {}
+  nodeColors: {
+    
+  }
 }
 
 // Point - x and y are lng and lat doubles.

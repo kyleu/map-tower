@@ -13,37 +13,13 @@ import akka.pattern.ask
 
 import play.api.Play.current
 
-object Robot {
-  def apply(gameRoom: ActorRef) {
-    val loggerIteratee = Iteratee.foreach[JsValue](event => Logger("robot").info(event.toString))
-
-    implicit val timeout = Timeout(1 second)
-    gameRoom ? (Join("Robot")) map {
-      case Connected(robotChannel) =>
-        // Apply this Enumerator on the logger.
-        robotChannel |>> loggerIteratee
-    }
-
-    // Make the robot talk every 30 seconds
-    Akka.system.scheduler.schedule(
-      30 seconds,
-      30 seconds,
-      gameRoom,
-      Talk("Robot", "I'm still alive")
-    )
-  }
-
-}
-
 object Room {
   implicit val timeout = Timeout(1 second)
 
   lazy val default = {
     val roomActor = Akka.system.actorOf(Props[Room])
-
     // Create a bot user (just for fun)
     Robot(roomActor)
-
     roomActor
   }
 
@@ -91,6 +67,10 @@ class Room extends Actor {
       notifyAll("talk", username, text)
     }
 
+    case Spawn(mob: String, x: Double, y: Double) => {
+      notifyAll("talk", mob, x + "/" + y)
+    }
+
     case Quit(username) => {
       members = members - username
       notifyAll("quit", username, "has left the game.")
@@ -113,11 +93,3 @@ class Room extends Actor {
     }
   }
 }
-
-case class Join(username: String)
-case class Quit(username: String)
-case class Talk(username: String, text: String)
-case class NotifyJoin(username: String)
-
-case class Connected(enumerator: Enumerator[JsValue])
-case class CannotConnect(msg: String)
