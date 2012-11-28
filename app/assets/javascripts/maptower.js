@@ -222,7 +222,7 @@ var MapView = Class.extend({
     // tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/998/256/{z}/{x}/{y}.png'
     var tileUrl = '/tiles/{z}/{x}/{y}';
     this.tileLayer = new L.TileLayer(tileUrl, {
-      maxZoom : 18,
+      maxZoom : 18
     });
     this.map.addLayer(this.tileLayer);
   },
@@ -252,7 +252,7 @@ function CustomIcon(iconUrl) {
       iconSize: new L.Point(38, 95),
       shadowSize: new L.Point(68, 95),
       iconAnchor: new L.Point(22, 94),
-      popupAnchor: new L.Point(-3, -76),
+      popupAnchor: new L.Point(-3, -76)
     }
   });
 }
