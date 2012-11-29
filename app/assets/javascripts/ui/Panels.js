@@ -1,6 +1,6 @@
-define([ "game/MapTower" ], function(MapTower) {
+define([ "game/Game" ], function(Game) {
   var onPanelEvent = function(msg, opt) {
-    var mv = MapTower.mapView;
+    var mv = Game.mapView;
     if(msg == "map" && opt == "zoom-in") {
       mv.zoomIn();
     } else if(msg == "map" && opt == "zoom-out") {
