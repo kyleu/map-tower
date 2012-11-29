@@ -5,11 +5,12 @@
 @headerContent() = {
   <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/leaflet.css")">
   <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
-  
-  <script src="@routes.Assets.at("javascripts/maptower.js")" type="text/javascript"></script>
+
   <script type="text/javascript">
     window.gameType = @Html(generate(gameType));
   </script>
+
+  <script data-main="@routes.Assets.at("javascripts/Game")" src="@routes.Assets.at("javascripts/require-jquery.js")" type="text/javascript"></script>
 }
 
 @main("MapTower Test", headerContent) {
