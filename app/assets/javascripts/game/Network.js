@@ -5,36 +5,30 @@ define([ "Class" ], function(Class) {
     init: function(wsUrl, callback) {
       this.callback = callback;
 
-      var eventSocket = new WS(wsUrl);
-      eventSocket.onmessage = this.receiveEvent;
+      this.eventSocket = new WS(wsUrl);
+      this.eventSocket.onmessage = this.receiveEvent(this);
     },
 
     sendMessage: function(obj) {
       console.log("Sending", obj);
-      eventSocket.send(JSON.stringify(obj));
+      this.eventSocket.send(JSON.stringify(obj));
     },
 
-    receiveEvent: function(event) {
-      var data = JSON.parse(event.data);
-      console.log("Received", event);
+    receiveEvent: function(self) {
+      return function(event) {
+        var data = JSON.parse(event.data);
+        console.log("Received", event);
 
-      if (data.error) {
-        eventSocket.close();
-        console.log("ERROR");
-        return;
-      }
+        if (data.error) {
+          eventSocket.close();
+          console.log("ERROR");
+          return;
+        }
 
-      var el = $('<div class="message"><span></span><p></p></div>');
-      $("span", el).text(data.user);
-      $("p", el).text(data.message);
-      $(el).addClass(data.kind);
-      if (data.user == '@username') {
-        $(el).addClass('me');
+        self.callback(data);
       }
-      $('#messages').append(el);
     }
   });
-  
-  
+
   return Network;
 });

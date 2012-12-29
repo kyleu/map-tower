@@ -73,24 +73,4 @@
       </div>
     </div>
   </div>
-
-  <script type="text/javascript" charset="utf-8">
-
-
-
-  $(function() {
-    var handleReturnKey = function(e) {
-      if (e.charCode == 13 || e.keyCode == 13) {
-        e.preventDefault();
-        sendMessage({
-          text : $("#talk").val()
-        })
-        $("#talk").val('');
-      }
-    }
-
-    $("#talk").keypress(handleReturnKey);
-  })
-  </script>
-  
 }

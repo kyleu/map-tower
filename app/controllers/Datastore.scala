@@ -7,7 +7,6 @@ import maptower.data._
 import maptower.map.Point
 import maptower.map.osm.{ OsmImporter, OsmConverter }
 
-import com.codahale.jerkson.Json._
 import com.mongodb.casbah.commons.{ MongoDBObject => Obj }
 
 object Datastore extends Controller {

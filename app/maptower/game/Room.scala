@@ -61,30 +61,26 @@ class Room extends Actor {
     }
 
     case NotifyJoin(username) => {
-      notifyAll("join", username, "has joined the game.")
+      notifyAll("join", Some(username), "has joined the game.")
     }
 
     case Talk(username, text) => {
-      notifyAll("talk", username, text)
+      notifyAll("talk", Some(username), text)
     }
 
-    case Spawn(mob: String, x: Double, y: Double) => {
-      notifyAll("talk", mob, x + "/" + y)
+    case msg: Spawn => {
+      notifyAll("talk", Some(msg.mob), msg)
     }
 
     case Quit(username) => {
       members = members - username
-      notifyAll("quit", username, "has left the game.")
+      notifyAll("quit", Some(username), "has left the game.")
     }
   }
 
-  def notifyAll(kind: String, user: String, text: String) {
-    val msg = generate(Map(
-      "kind" -> kind,
-      "user" -> user,
-      "message" -> text,
-      "members" -> members.keySet.toList
-    ))
+  def notifyAll(kind: String, user: Option[String], data: Any) {
+    val evt = new GameEvent(kind, user, data, Some(members.keySet.toList))
+    val msg = generate(evt)
     members.foreach {
       case (_, channel) => channel.push(msg)
     }

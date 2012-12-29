@@ -8,6 +8,6 @@ object Admin extends Controller {
   }
 
   def logs = Action {
-    TODO
+    Ok("TODO")
   }
 }

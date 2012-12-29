@@ -1,17 +1,29 @@
-define([ "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/MapView" ], function(Network, Point, Node, Way, Mob, MapView) {
-  // Handles server communication, game state, input, animation, other shizzle. Should break this class up soon.
-  var Game = {
-    init: function(gameType) {
-      Game.gameType = gameType;
-      Game.gameType.initialCenter = new Point(Game.gameType.initialCenter.x, Game.gameType.initialCenter.y);
+define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/MapView" ], function(Class, Network, Point, Node, Way, Mob, MapView) {
+  var mapDataCallback = function(self) {
+    return function(rsp) {
+      for ( var i in rsp.nodes) {
+        self.addNode(rsp.nodes[i]);
+      }
+      for ( var i in rsp.ways) {
+        self.addWay(rsp.ways[i]);
+      }
+    };
+  };
 
-      Game.nodeCache = {};
-      Game.wayCache = {};
-      Game.mapView = null;
+  var Game = Class.extend({
+    init: function() {
+      this.nodeCache = {};
+      this.wayCache = {};
+      this.mapView = null;
+    },
 
-      Game.initView("map");
+    start: function(gameType) {
+      this.gameType = gameType;
+      this.gameType.initialCenter = new Point(this.gameType.initialCenter.x, this.gameType.initialCenter.y);
 
-      this.network = new Network(gameType.websocketUrl, Game.onEvent);
+      this.initView("map");
+
+      this.network = new Network(gameType.websocketUrl, this.onEvent);
     },
 
     clear: function() {
@@ -19,22 +31,21 @@ define([ "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/
     },
 
     initView: function(divId) {
-      Game.mapView = new MapView(divId, Game.gameType.initialCenter, Game.gameType.initialZoom);
-      Game.update(Game.mapView.map.getBounds());
-      Game.mapView.addTileLayer();
+      this.mapView = new MapView(divId, this.gameType.initialCenter, this.gameType.initialZoom);
+      this.update(this.mapView.map.getBounds());
+      this.mapView.addTileLayer();
     },
 
-    onEvent: function() {
-
-    },
-
-    networkCallback: function(rsp) {
-      for ( var i in rsp.nodes) {
-        Game.addNode(rsp.nodes[i]);
+    onEvent: function(data) {
+      console.log("!!!!!", data);
+      var el = $('<div class="message"><span></span><p></p></div>');
+      $("span", el).text(data.user);
+      $("p", el).text(data.data);
+      $(el).addClass(data.kind);
+      if (data.user == '@username') {
+        $(el).addClass('me');
       }
-      for ( var i in rsp.ways) {
-        Game.addWay(rsp.ways[i]);
-      }
+      $('#messages').append(el);
     },
 
     update: function(b) {
@@ -46,16 +57,17 @@ define([ "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/
         "max.x": br.lng,
         "max.y": ul.lat
       };
-      $.get('/game/' + this.gameType.code + '/data', params, Game.networkCallback, "json");
+
+      $.get('/game/' + this.gameType.code + '/data', params, mapDataCallback(this), "json");
     },
 
     addNode: function(obj) {
-      if (Game.nodeCache[obj.osmId]) {
+      if (this.nodeCache[obj.osmId]) {
         console.warn("Encountered cached node on update: ", obj);
       } else {
         node = new Node(obj);
-        Game.nodeCache[node.osmId] = node;
-        node.render(Game.mapView);
+        this.nodeCache[node.osmId] = node;
+        node.render(this.mapView);
       }
     },
 
@@ -64,10 +76,11 @@ define([ "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/
         console.warn("Encountered cached way on update: ", obj);
       } else {
         var way = new Way(obj);
-        Game.wayCache[way.osmId] = way;
-        way.render(Game.mapView);
+        this.wayCache[way.osmId] = way;
+        way.render(this.mapView);
       }
     }
-  };
-  return Game;
+  });
+
+  return new Game();
 });

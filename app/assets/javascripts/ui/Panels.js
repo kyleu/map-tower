@@ -11,11 +11,31 @@ define([ "game/Game" ], function(Game) {
       opt ? mv.map.addLayer(mv.nodeGroup) : mv.map.removeLayer(mv.nodeGroup);
     } else if(msg == "draw-bg"){
       opt ? mv.map.addLayer(mv.tileLayer) : mv.map.removeLayer(mv.tileLayer);
+    } else if(msg == "debug"){
+      onDebugEvent(opt);
     } else {
       console.log("Unhandled message " + msg + "(" + opt + ").");
     }
   };
-  
+
+  var onDebugEvent = function(opt) {
+    if(opt == "reload") {
+      console.log("reload");
+    } else {
+      console.log("Unhandled debug message \"" + opt + "\".");
+    }
+  };
+
+  var handleReturnKey = function(e) {
+    if (e.charCode == 13 || e.keyCode == 13) {
+      e.preventDefault();
+      Game.network.sendMessage({
+        text : $("#talk").val()
+      })
+      $("#talk").val('');
+    }
+  };
+
   $(function() {
     $(".panel button").click(function(e) {
       onPanelEvent(e.srcElement.name, e.srcElement.value);
@@ -26,5 +46,6 @@ define([ "game/Game" ], function(Game) {
     $(".panel input:checkbox").click(function(e) {
       onPanelEvent(e.srcElement.name, e.srcElement.checked);
     });
+    $("#talk").keypress(handleReturnKey);
   });
 });

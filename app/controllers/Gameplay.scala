@@ -3,9 +3,9 @@ package controllers
 import com.codahale.jerkson.Json.generate
 
 import controllers.forms.Forms
-import maptower.data.{osmDao, mapDao}
-import maptower.game.{Room, GameType}
-import play.api.mvc.{WebSocket, Controller, Action}
+import maptower.data.{ osmDao, mapDao }
+import maptower.game.{ Room, GameType }
+import play.api.mvc.{ WebSocket, Controller, Action }
 
 object Gameplay extends Controller {
   def index(id: String, username: String) = Action { implicit request =>
