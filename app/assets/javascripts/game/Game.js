@@ -36,6 +36,10 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
       this.mapView.addTileLayer();
     },
 
+    sendEvent: function(data) {
+      network.sendMessage(data);
+    },
+
     onEvent: function(data) {
       console.log("!!!!!", data);
       var el = $('<div class="message"><span></span><p></p></div>');

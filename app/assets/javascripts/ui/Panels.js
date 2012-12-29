@@ -29,7 +29,7 @@ define([ "game/Game" ], function(Game) {
   var handleReturnKey = function(e) {
     if (e.charCode == 13 || e.keyCode == 13) {
       e.preventDefault();
-      Game.network.sendMessage({
+      Game.sendEvent({
         text : $("#talk").val()
       })
       $("#talk").val('');
