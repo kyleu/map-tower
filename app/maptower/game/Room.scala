@@ -29,7 +29,7 @@ object Room {
       case Connected(enumerator) =>
         // Create an Iteratee to consume the feed
         val iteratee = Iteratee.foreach[String] { event =>
-          default ! Talk(username, event)
+          default ! process(username, event)
         }.mapDone { _ =>
           default ! Quit(username)
         }
@@ -42,6 +42,10 @@ object Room {
         val enumerator = Enumerator[String](error).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee, enumerator)
     }
+  }
+
+  private def process(username: String, event: String) = {
+    Talk(username, event)
   }
 }
 
@@ -69,7 +73,7 @@ class Room extends Actor {
     }
 
     case msg: Spawn => {
-      notifyAll("talk", Some(msg.mob), msg)
+      notifyAll("spawn", Some(msg.mob), msg)
     }
 
     case Quit(username) => {
@@ -81,6 +85,7 @@ class Room extends Actor {
   def notifyAll(kind: String, user: Option[String], data: Any) {
     val evt = new GameEvent(kind, user, data, Some(members.keySet.toList))
     val msg = generate(evt)
+    println("Sending: " + msg)
     members.foreach {
       case (_, channel) => channel.push(msg)
     }

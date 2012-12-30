@@ -17,13 +17,14 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
       this.mapView = null;
     },
 
-    start: function(gameType) {
+    start: function(gameType, eventCallbacks) {
+      this.eventCallbacks = eventCallbacks
       this.gameType = gameType;
       this.gameType.initialCenter = new Point(this.gameType.initialCenter.x, this.gameType.initialCenter.y);
 
       this.initView("map");
-
-      this.network = new Network(gameType.websocketUrl, this.onEvent);
+      var networkCallback = _.bind(this.onEvent, this);
+      this.network = new Network(gameType.websocketUrl, networkCallback);
     },
 
     clear: function() {
@@ -32,24 +33,21 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
 
     initView: function(divId) {
       this.mapView = new MapView(divId, this.gameType.initialCenter, this.gameType.initialZoom);
+      this.eventCallbacks.push(_.bind(this.mapView.onGameEvent, this.mapView));
+
       this.update(this.mapView.map.getBounds());
       this.mapView.addTileLayer();
     },
 
     sendEvent: function(data) {
-      network.sendMessage(data);
+      this.network.sendMessage(data);
     },
 
-    onEvent: function(data) {
-      console.log("!!!!!", data);
-      var el = $('<div class="message"><span></span><p></p></div>');
-      $("span", el).text(data.user);
-      $("p", el).text(data.data);
-      $(el).addClass(data.kind);
-      if (data.user == '@username') {
-        $(el).addClass('me');
+    onEvent: function(msg) {
+      var results = _.map(this.eventCallbacks, function(c){ return c(msg); });
+      if(!_.some(results)) {
+        console.log("Unhandled message of type \"" + msg.kind + "\".", msg);
       }
-      $('#messages').append(el);
     },
 
     update: function(b) {

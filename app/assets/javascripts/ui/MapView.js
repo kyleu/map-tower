@@ -17,6 +17,10 @@ define([ "Class" ], function(Class) {
       this.map.addLayer(this.wayGroup);
     },
 
+    onGameEvent: function(msg) {
+      return false;
+    },
+
     zoomIn: function() {
       this.map.zoomIn();
     },

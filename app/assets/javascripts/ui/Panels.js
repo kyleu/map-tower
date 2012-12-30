@@ -1,4 +1,16 @@
 define([ "game/Game" ], function(Game) {
+  var onGameEvent = function(msg) {
+    var handled = true;
+    if(msg.kind == "talk") {
+      logToTalk(msg.kind, msg.user, msg.data);
+    } else if(msg.kind == "join") {
+      logToTalk(msg.kind, msg.user, msg.data);
+    } else {
+      handled = false;
+    }
+    return handled;
+  }
+
   var onPanelEvent = function(msg, opt) {
     var mv = Game.mapView;
     if(msg == "map" && opt == "zoom-in") {
@@ -26,11 +38,23 @@ define([ "game/Game" ], function(Game) {
     }
   };
 
+  var logToTalk = function(kind, user, data) {
+    var el = $('<div class="message"><span></span><p></p></div>');
+    $("span", el).text(user);
+    $("p", el).text(data);
+    $(el).addClass(kind);
+    if (data.user == '@username') {
+      $(el).addClass('me');
+    }
+    $('#messages').append(el);
+  }
+
   var handleReturnKey = function(e) {
     if (e.charCode == 13 || e.keyCode == 13) {
       e.preventDefault();
       Game.sendEvent({
-        text : $("#talk").val()
+        type: "Chat",
+        chat: $("#talk").val()
       })
       $("#talk").val('');
     }
@@ -48,4 +72,8 @@ define([ "game/Game" ], function(Game) {
     });
     $("#talk").keypress(handleReturnKey);
   });
+  
+  return {
+    gameCallback: onGameEvent
+  };
 });
