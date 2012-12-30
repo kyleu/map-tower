@@ -17,7 +17,6 @@ define([ "Class" ], function(Class) {
     receiveEvent: function(self) {
       return function(event) {
         var data = JSON.parse(event.data);
-        console.log("Received", event);
 
         if (data.error) {
           eventSocket.close();

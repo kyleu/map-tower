@@ -6,7 +6,7 @@ require.config({
   }
 });
 
-require([ "jquery", "extern/underscore", "game/Game", "ui/Panels" ], function($, _, Game, Panels) {
+require([ "game/Game", "ui/Panels" ], function(Game, Panels) {
   $(function() {
     $(function() {
       Game.start(window.gameType, [Panels.gameCallback]);

@@ -39,7 +39,7 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
       this.mapView.addTileLayer();
     },
 
-    sendEvent: function(data) {
+    send: function(data) {
       this.network.sendMessage(data);
     },
 

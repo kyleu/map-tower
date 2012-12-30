@@ -1,4 +1,6 @@
 define([ "game/Game" ], function(Game) {
+  var numGameEvents = 0;
+
   var onGameEvent = function(msg) {
     var handled = true;
     if(msg.kind == "talk") {
@@ -8,6 +10,8 @@ define([ "game/Game" ], function(Game) {
     } else {
       handled = false;
     }
+    $("#member-list").text("Players: " + msg.members.join(", "));
+    $("#network-stats").text(++numGameEvents + " events processed.");
     return handled;
   }
 
@@ -52,7 +56,7 @@ define([ "game/Game" ], function(Game) {
   var handleReturnKey = function(e) {
     if (e.charCode == 13 || e.keyCode == 13) {
       e.preventDefault();
-      Game.sendEvent({
+      Game.send({
         type: "Chat",
         chat: $("#talk").val()
       })
