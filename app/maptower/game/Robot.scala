@@ -8,8 +8,15 @@ import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.libs.iteratee.Iteratee
 import play.api.Logger
+import java.io.File
+import java.util.Random
 
 object Robot {
+  lazy val mobs = {
+    val d = new java.io.File("./public/images/mob")
+    d.listFiles().map(f => f.getName.substring(0, f.getName.indexOf('.')))
+  }
+
   def apply(gameRoom: ActorRef) {
     val loggerIteratee = Iteratee.foreach[String](event => Logger("robot").info(event))
 
@@ -34,7 +41,11 @@ object Robot {
       5 seconds,
       5 seconds,
       gameRoom,
-      Spawn("RobotMob", 0.0, 0.0)
+      Spawn(mobName, 0.0, 0.0)
     )
+  }
+
+  def mobName = {
+    mobs(new Random().nextInt(mobs.length))
   }
 }
