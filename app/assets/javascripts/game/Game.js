@@ -1,15 +1,4 @@
 define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/MapView" ], function(Class, Network, Point, Node, Way, Mob, MapView) {
-  var mapDataCallback = function(self) {
-    return function(rsp) {
-      for ( var i in rsp.nodes) {
-        self.addNode(rsp.nodes[i]);
-      }
-      for ( var i in rsp.ways) {
-        self.addWay(rsp.ways[i]);
-      }
-    };
-  };
-
   var Game = Class.extend({
     init: function() {
       this.nodeCache = {};
@@ -60,7 +49,16 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
         "max.y": ul.lat
       };
 
-      $.get('/game/' + this.gameType.code + '/data', params, mapDataCallback(this), "json");
+      $.get('/game/' + this.gameType.code + '/data', params, _.bind(this.mapDataCallback, this), "json");
+    },
+
+    mapDataCallback: function(rsp) {
+      for ( var i in rsp.nodes) {
+        this.addNode(rsp.nodes[i]);
+      }
+      for ( var i in rsp.ways) {
+        this.addWay(rsp.ways[i]);
+      }
     },
 
     addNode: function(obj) {
@@ -84,5 +82,7 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
     }
   });
 
-  return new Game();
+  var activeGame = new Game();
+  window.DEBUG = activeGame;
+  return activeGame;
 });

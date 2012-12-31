@@ -1,6 +1,11 @@
-define([ "Class", "Util" ], function(Class, Util) {
+define([ "Class", "Theme" ], function(Class, Theme) {
+  var onWayClick = function(e) {
+    console.log(message, e);
+  }
+
   var Way = Class.extend({
-    init : function(w) {
+    init: function(w) {
+      this.osmId = w.osmId;
       this.name = w.name;
       this.category = w.category;
       this.subcategory = w.subcategory;
@@ -12,20 +17,26 @@ define([ "Class", "Util" ], function(Class, Util) {
       }
     },
 
-    render : function(mapView) {
-      if (!this.way) {
-        this.way = this.createWay();
-        mapView.wayGroup.addLayer(this.way);
+    render: function(mapView) {
+      if (!this.polyline) {
+        this.polyline = this.createPolyline();
+        mapView.wayGroup.addLayer(this.polyline);
       }
     },
 
-    createWay : function() {
+    createPolyline: function() {
       var ret = new L.Polyline(this.latlngs, {
-        color : Util.getColor(this.category, this.subcategory)
+        color: Theme.getColor(this.category, this.subcategory)
       });
-      message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory + "<br/><br/>\n";
+      ret.way = this;
+
+      message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory
+          + "<br/><br/>\n";
       message += this.note.split(",").join("<br/>\n");
-      ret.bindPopup(message);
+
+      ret.on('click', onWayClick);
+
+      // ret.bindPopup(message);
       return ret;
     }
   });
