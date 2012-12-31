@@ -22,7 +22,7 @@ object Robot {
 
     implicit val timeout = Timeout(1 second)
 
-    gameRoom ? (Join("Robot")) map {
+    gameRoom ? (Join("GLaDOS")) map {
       case Connected(robotChannel) =>
         // Apply this Enumerator on the logger.
         robotChannel |>> loggerIteratee
@@ -33,7 +33,7 @@ object Robot {
       30 seconds,
       30 seconds,
       gameRoom,
-      Talk("Robot", "I'm still alive")
+      Talk("GLaDOS", "I'm still alive")
     )
 
     // Make the robot spawn every 5 seconds
