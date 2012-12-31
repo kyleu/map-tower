@@ -38,8 +38,10 @@ define([ "game/Game", "Theme" ], function(Game, Theme) {
   };
 
   var onDebugEvent = function(opt) {
-    if (opt == "redraw") {
-      redrawGame();
+    if (opt == "load") {
+      Game.loadMapData(Game.mapView.map.getBounds());
+    } else if (opt == "clear") {
+      Game.clear();
     } else {
       console.log("Unhandled debug message \"" + opt + "\".");
     }

@@ -20,13 +20,16 @@ define([ "Class" ], function(Class) {
     onGameEvent: function(msg) {
       var ret = true;
       if(msg.kind == "spawn") {
-        console.log("Spawning.");
-        //console.log("Spawning " + msg.user + " at " + msg.data.x + ", " + msg.data.y + ".");
-        //$("body").append("<img class=\"mob\" src=\"/assets/images/mob/slime.png\" />")
+
       } else {
         ret = false;
       }
       return ret;
+    },
+
+    clear: function() {
+      this.nodeGroup.clearLayers();
+      this.wayGroup.clearLayers();
     },
 
     zoomIn: function() {
@@ -38,7 +41,8 @@ define([ "Class" ], function(Class) {
     },
 
     addTileLayer: function() {
-      // tileUrl = 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/998/256/{z}/{x}/{y}.png'
+      // tileUrl =
+      // 'http://{s}.tile.cloudmade.com/0320d0049e1a4242bab7857cec8b343a/998/256/{z}/{x}/{y}.png'
       var tileUrl = '/tiles/{z}/{x}/{y}';
       this.tileLayer = new L.TileLayer(tileUrl, {
         maxZoom: 18
