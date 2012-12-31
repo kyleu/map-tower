@@ -18,7 +18,15 @@ define([ "Class" ], function(Class) {
     },
 
     onGameEvent: function(msg) {
-      return false;
+      var ret = true;
+      if(msg.kind == "spawn") {
+        console.log("Spawning.");
+        //console.log("Spawning " + msg.user + " at " + msg.data.x + ", " + msg.data.y + ".");
+        //$("body").append("<img class=\"mob\" src=\"/assets/images/mob/slime.png\" />")
+      } else {
+        ret = false;
+      }
+      return ret;
     },
 
     zoomIn: function() {
