@@ -2,7 +2,7 @@ define([ "Class", "Theme" ], function(Class, Theme) {
   // Node
   var Node = Class.extend({
     init: function(n) {
-      this.osmId = n.osmId;
+      this.id = n.osmId;
       this.name = n.name;
       this.category = n.category;
       this.subcategory = n.subcategory;

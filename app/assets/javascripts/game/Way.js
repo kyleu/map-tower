@@ -5,7 +5,7 @@ define([ "Class", "Theme" ], function(Class, Theme) {
 
   var Way = Class.extend({
     init: function(w) {
-      this.osmId = w.osmId;
+      this.id = w.osmId;
       this.name = w.name;
       this.category = w.category;
       this.subcategory = w.subcategory;
@@ -36,7 +36,7 @@ define([ "Class", "Theme" ], function(Class, Theme) {
 
       ret.on('click', onWayClick);
 
-      // ret.bindPopup(message);
+      ret.bindPopup(message);
       return ret;
     }
   });
