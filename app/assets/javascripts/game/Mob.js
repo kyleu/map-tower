@@ -1,8 +1,9 @@
 define([ "Class", "game/Point" ], function(Class, Point) {
   var Mob = Class.extend({
-    init: function(name, x, y) {
-      this.name = name;
-      this.loc = new Point(x, y);
+    init: function(m) {
+      this.id = m.id
+      this.name = m.name;
+      this.loc = new Point(m.x, m.y);
       console.log(this);
     }
   });
