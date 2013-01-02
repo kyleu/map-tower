@@ -1,10 +1,6 @@
 define([ "Class", "Theme" ], function(Class, Theme) {
   "use strict";
 
-  var onWayClick = function(e) {
-    console.log(message, e);
-  }
-
   var Way = Class.extend({
     init: function(w) {
       this.id = w.osmId;
@@ -32,11 +28,13 @@ define([ "Class", "Theme" ], function(Class, Theme) {
       });
       ret.way = this;
 
-      var message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory
+      var message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + ":" + this.subcategory
           + "<br/><br/>\n";
       message += this.note.split(",").join("<br/>\n");
 
-      ret.on('click', onWayClick);
+      ret.on('click', function(e) {
+        console.log(message, e);
+      });
 
       ret.bindPopup(message);
       return ret;

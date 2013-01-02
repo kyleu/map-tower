@@ -10,38 +10,55 @@ define([ "Class" ], function(Class) {
     return color;
   }
 
-  var Theme = {
-    activeTheme: "random",
+  var activeTheme = "standard";
 
+  var nodeColors = {
+    standard: {
+      fallback: "#000",
+      highway_secondary: "#00c",
+      highway_tertiary: "#00a",
+      highway: "#00f"
+    },
+    random: {},
+    dark: {
+      fallback: "#ddd"
+    },
+    sat: {
+      fallback: "#000"
+    }
+  };
+
+  var Theme = {
     setActiveTheme: function(theme) {
-      Theme.activeTheme = theme;
-      console.log("Changing theme to " + theme + ".");
+      if(activeTheme != theme) {
+        activeTheme = theme;
+        console.log("Changing theme to " + theme + ".");
+      }
+    },
+
+    getActiveTheme: function() {
+      return activeTheme;
+    },
+
+    getActiveNodeColors: function() {
+      return nodeColors[activeTheme];
     },
 
     getColor: function(cat, subcat) {
-      var key = cat + ":" + subcat;
-      var color = Theme.nodeColors[Theme.activeTheme][key];
+      var key = cat + "_" + subcat;
+      var colors = Theme.getActiveNodeColors();
+      var color = colors[key];
       if (color == null) {
-        color = Theme.nodeColors[Theme.activeTheme].fallback
+        color = colors[cat]
+        if (color == null) {
+          color = colors.fallback
+        }
         if (color == null) {
           color = randomColor();
         }
-        Theme.nodeColors[key] = color;
+        colors[key] = color;
       }
       return color;
-    },
-
-    nodeColors: {
-      standard: {
-        fallback: "#000"
-      },
-      random: {},
-      dark: {
-        fallback: "#ddd"
-      },
-      sat: {
-        fallback: "#000"
-      }
     }
   };
 

@@ -5,9 +5,9 @@ define([ "game/Game", "Theme" ], function(Game, Theme) {
 
   var onGameEvent = function(msg) {
     var handled = true;
-    if (msg.kind == "talk") {
+    if(msg.kind == "talk") {
       logToTalk(msg.kind, msg.user, msg.data);
-    } else if (msg.kind == "join") {
+    } else if(msg.kind == "join") {
       logToTalk(msg.kind, msg.user, msg.data);
     } else {
       handled = false;
@@ -19,19 +19,19 @@ define([ "game/Game", "Theme" ], function(Game, Theme) {
 
   var onPanelEvent = function(msg, opt) {
     var mv = Game.mapView;
-    if (msg == "map" && opt == "zoom-in") {
+    if(msg == "map" && opt == "zoom-in") {
       mv.zoomIn();
-    } else if (msg == "map" && opt == "zoom-out") {
+    } else if(msg == "map" && opt == "zoom-out") {
       mv.zoomOut();
-    } else if (msg == "draw-way") {
+    } else if(msg == "draw-way") {
       opt ? mv.map.addLayer(mv.wayGroup) : mv.map.removeLayer(mv.wayGroup);
-    } else if (msg == "draw-node") {
+    } else if(msg == "draw-node") {
       opt ? mv.map.addLayer(mv.nodeGroup) : mv.map.removeLayer(mv.nodeGroup);
-    } else if (msg == "draw-bg") {
+    } else if(msg == "draw-bg") {
       opt ? mv.map.addLayer(mv.tileLayer) : mv.map.removeLayer(mv.tileLayer);
-    } else if (msg == "debug") {
+    } else if(msg == "debug") {
       onDebugEvent(opt);
-    } else if (msg == "theme") {
+    } else if(msg == "theme") {
       Theme.setActiveTheme(opt);
       redrawGame();
     } else {
@@ -40,23 +40,28 @@ define([ "game/Game", "Theme" ], function(Game, Theme) {
   };
 
   var onDebugEvent = function(opt) {
-    if (opt == "load") {
+    if(opt == "load") {
       Game.loadMapData(Game.mapView.map.getBounds());
-    } else if (opt == "clear") {
+    } else if(opt == "clear") {
       Game.clear();
+    } else if(opt == "random") {
+      var colors = Theme.getActiveNodeColors();
+      _.each(_.keys(colors), function(k) {
+        console.log(k);
+      });
     } else {
       console.log("Unhandled debug message \"" + opt + "\".");
     }
   };
 
   var redrawGame = function() {
-    for (key in Game.nodeCache) {
+    for ( var key in Game.nodeCache) {
       var node = Game.nodeCache[key];
       node.marker.setStyle({
         "fillColor": Theme.getColor(node.category, node.subcategory)
       });
     }
-    for (key in Game.wayCache) {
+    for ( var key in Game.wayCache) {
       var way = Game.wayCache[key];
       way.polyline.setStyle({
         "color": Theme.getColor(way.category, way.subcategory)
@@ -69,14 +74,14 @@ define([ "game/Game", "Theme" ], function(Game, Theme) {
     $("span", el).text(user);
     $("p", el).text(data);
     $(el).addClass(kind);
-    if (data.user == '@username') {
+    if(data.user == '@username') {
       $(el).addClass('me');
     }
     $('#messages').append(el);
   }
 
   var handleReturnKey = function(e) {
-    if (e.charCode == 13 || e.keyCode == 13) {
+    if(e.charCode == 13 || e.keyCode == 13) {
       e.preventDefault();
       Game.send({
         type: "Chat",
