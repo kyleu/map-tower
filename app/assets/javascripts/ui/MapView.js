@@ -1,4 +1,6 @@
 define([ "Class" ], function(Class) {
+  "use strict";
+
   // Contains all Leaflet interactions, caches map data
   var MapView = Class.extend({
     init: function(id, center, zoom) {

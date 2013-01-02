@@ -1,4 +1,6 @@
 define([ "Class" ], function(Class) {
+  "use strict";
+
   var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket;
 
   var Network = Class.extend({

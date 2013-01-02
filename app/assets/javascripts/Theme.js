@@ -1,4 +1,6 @@
 define([ "Class" ], function(Class) {
+  "use strict";
+
   function randomColor() {
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';

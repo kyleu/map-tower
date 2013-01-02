@@ -1,4 +1,6 @@
 define([ "Class" ], function(Class) {
+  "use strict";
+
   // Point - x and y are lng and lat doubles.
   var Point = Class.extend({
     init: function(x, y) {

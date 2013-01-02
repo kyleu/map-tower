@@ -1,4 +1,6 @@
 define([ "Class", "Theme" ], function(Class, Theme) {
+  "use strict";
+
   var onWayClick = function(e) {
     console.log(message, e);
   }
@@ -30,7 +32,7 @@ define([ "Class", "Theme" ], function(Class, Theme) {
       });
       ret.way = this;
 
-      message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory
+      var message = "Way (" + this.latlngs.length + " points)<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory
           + "<br/><br/>\n";
       message += this.note.split(",").join("<br/>\n");
 

@@ -1,4 +1,6 @@
 define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/Mob", "ui/MapView" ], function(Class, Network, Point, Node, Way, Mob, MapView) {
+  "use strict";
+
   var Game = Class.extend({
     init: function() {
       this.nodeCache = {};
@@ -62,7 +64,7 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
     loadMapData: function(b) {
       var ul = b.getNorthWest();
       var br = b.getSouthEast();
-      params = {
+      var params = {
         "min.x": ul.lng,
         "min.y": br.lat,
         "max.x": br.lng,
@@ -85,7 +87,7 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
       if (this.nodeCache[obj.id]) {
         console.warn("Encountered cached node on update: ", obj);
       } else {
-        node = new Node(obj);
+        var node = new Node(obj);
         this.nodeCache[node.id] = node;
         node.render(this.mapView);
       }

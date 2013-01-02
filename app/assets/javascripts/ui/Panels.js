@@ -1,4 +1,6 @@
 define([ "game/Game", "Theme" ], function(Game, Theme) {
+  "use strict";
+
   var numGameEvents = 0;
 
   var onGameEvent = function(msg) {

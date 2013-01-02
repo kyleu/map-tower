@@ -1,5 +1,6 @@
 define([ "Class", "Theme" ], function(Class, Theme) {
-  // Node
+  "use strict";
+
   var Node = Class.extend({
     init: function(n) {
       this.id = n.osmId;
@@ -24,7 +25,7 @@ define([ "Class", "Theme" ], function(Class, Theme) {
         fillOpacity: 0.5
       };
       var ret = new L.CircleMarker(new L.LatLng(this.loc.y, this.loc.x), circleOptions);
-      message = "lat: " + this.loc.y + "<br/>lng: " + this.loc.x;
+      var message = "lat: " + this.loc.y + "<br/>lng: " + this.loc.x;
       message += "<br/><br/>\n<strong>" + this.name + "</strong><br/>\n" + this.category + "<br/>\n" + this.subcategory + "<br/><br/>\n";
       message += this.note.split(",").join("<br/>\n");
       ret.bindPopup(message);
