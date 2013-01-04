@@ -12,11 +12,11 @@ object JsonReads {
   implicit val readsBounds = Json.reads[Bounds]
   implicit val readsNode = Json.reads[Node]
   implicit val readsWay = Json.reads[Way]
-  //
-  //  implicit val readsOsmNode = Json.reads[OsmNode]
-  //  implicit val readsOsmRelation = Json.reads[OsmRelation]
-  //  implicit val readsOsmTags = Json.reads[OsmTags]
-  //  implicit val readsOsmWay = Json.reads[OsmWay]
+
+  implicit val readsOsmNode = Json.reads[OsmNode]
+  implicit val readsOsmRelationMember = Json.reads[OsmRelationMember]
+  implicit val readsOsmRelation = Json.reads[OsmRelation]
+  implicit val readsOsmWay = Json.reads[OsmWay]
 
   //  implicit val readsGameEvent = Json.reads[GameEvent]
 }

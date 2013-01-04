@@ -5,11 +5,7 @@ import com.mongodb.{ BasicDBList, BasicDBObject }
 import com.mongodb.casbah.Imports._
 import maptower.map._
 
-object OsmWay {
-  val empty = new OsmWay(0, Seq[Int](), Map[String, String]())
-
-  def apply() = empty
-
+object OsmWayHelper {
   def apply(obj: Obj) = {
     val nodeRefs: ObjList = obj.as[MongoDBList]("nodes")
     val nodeIds = nodeRefs.map(_.asInstanceOf[Int])

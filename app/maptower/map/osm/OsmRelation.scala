@@ -4,11 +4,7 @@ import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList
 import com.mongodb.{ BasicDBList, BasicDBObject }
 import com.mongodb.casbah.Imports._
 
-object OsmRelation {
-  val empty = new OsmWay(0, Seq[Int](), Map[String, String]())
-
-  def apply() = empty
-
+object OsmRelationHelper {
   def apply(obj: Obj) = {
     val memberObjs: ObjList = obj.as[MongoDBList]("members")
     val members = memberObjs map { o =>

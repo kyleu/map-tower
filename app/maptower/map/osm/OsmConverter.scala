@@ -17,7 +17,7 @@ object OsmConverter {
 
 object OsmNodeConverter {
   def apply() {
-    val osmNodes = osmDao.mongoDb("osmnode").find(Obj("tags.k" -> "name")) map (OsmNode(_))
+    val osmNodes = osmDao.mongoDb("osmnode").find(Obj("tags.k" -> "name")) map (OsmNodeHelper(_))
     val nodes = osmNodes map { apply(_) }
 
     val nodeCollection = mapDao.mongoDb("node")
@@ -45,7 +45,7 @@ object OsmWayConverter {
   def apply() {
     val wayCollection = mapDao.mongoDb("way")
     var wayCount = 0
-    val osmWays = osmDao.mongoDb("osmway") find () map (OsmWay(_))
+    val osmWays = osmDao.mongoDb("osmway") find () map (OsmWayHelper(_))
     val ways = osmWays map { osmWay =>
       val referencedPoints = osmDao.getNodes(osmWay.nodeIds).toSeq
       val way = apply(osmWay, referencedPoints)
@@ -58,7 +58,7 @@ object OsmWayConverter {
     println("Inserted %s ways." format wayCount)
 
     var relationCount = 0
-    val osmRelations = osmDao.mongoDb("osmrelation") find () map (OsmRelation(_))
+    val osmRelations = osmDao.mongoDb("osmrelation") find () map (OsmRelationHelper(_))
     for (relation <- osmRelations) {
       relationCount += 1
       //println(relation.members.size, relation.tags)

@@ -12,11 +12,11 @@ object JsonWrites {
   implicit val writesBounds = Json.writes[Bounds]
   implicit val writesNode = Json.writes[Node]
   implicit val writesWay = Json.writes[Way]
-  //
-  //  implicit val writesOsmNode = Json.writes[OsmNode]
-  //  implicit val writesOsmRelation = Json.writes[OsmRelation]
-  //  implicit val writesOsmTags = Json.writes[OsmTags]
-  //  implicit val writesOsmWay = Json.writes[OsmWay]
+
+  implicit val writesOsmNode = Json.writes[OsmNode]
+  implicit val writesOsmRelationMember = Json.writes[OsmRelationMember]
+  implicit val writesOsmRelation = Json.writes[OsmRelation]
+  implicit val writesOsmWay = Json.writes[OsmWay]
 
   //  implicit val writesGameEvent = Json.writes[GameEvent]
 }

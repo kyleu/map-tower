@@ -21,13 +21,13 @@ class OsmDao(dbName: String, enableTrace: Boolean) extends BaseDao(dbName, enabl
     mongoDb("osmrelation").createIndex(Obj("members.ref" -> 1))
   }
 
-  def nodesNear(p: Point) = mongoDb("osmnode") find (Obj("loc" -> near(p))) map (OsmNode(_))
-  def nodesWithin(b: Bounds) = mongoDb("osmnode") find (Obj("loc" -> within(b))) map (OsmNode(_))
-  def getNodes(nodeIds: Seq[Int]) = mongoDb("osmnode") find ("osmId" $in nodeIds) map (OsmNode(_))
+  def nodesNear(p: Point) = mongoDb("osmnode") find (Obj("loc" -> near(p))) map (OsmNodeHelper(_))
+  def nodesWithin(b: Bounds) = mongoDb("osmnode") find (Obj("loc" -> within(b))) map (OsmNodeHelper(_))
+  def getNodes(nodeIds: Seq[Int]) = mongoDb("osmnode") find ("osmId" $in nodeIds) map (OsmNodeHelper(_))
 
-  def waysContainingNodes(nodeOsmIds: Array[Int]) = mongoDb("osmway") find ("nodes" $in nodeOsmIds) map (OsmWay(_))
+  def waysContainingNodes(nodeOsmIds: Array[Int]) = mongoDb("osmway") find ("nodes" $in nodeOsmIds) map (OsmWayHelper(_))
 
-  def relationsContainingNodes(nodeOsmIds: Array[Int]) = mongoDb("osmrelation").find(Obj("members.type" -> "node", "members.ref" -> nodeOsmIds)) map (OsmRelation(_)) toSeq
-  def relationsContainingWays(wayOsmIds: Array[Int]) = mongoDb("osmrelation").find(Obj("members.type" -> "way", "members.ref" -> Obj("$in" -> ObjList(wayOsmIds)))) map (OsmRelation(_)) toSeq
+  def relationsContainingNodes(nodeOsmIds: Array[Int]) = mongoDb("osmrelation").find(Obj("members.type" -> "node", "members.ref" -> nodeOsmIds)) map (OsmRelationHelper(_)) toSeq
+  def relationsContainingWays(wayOsmIds: Array[Int]) = mongoDb("osmrelation").find(Obj("members.type" -> "way", "members.ref" -> Obj("$in" -> ObjList(wayOsmIds)))) map (OsmRelationHelper(_)) toSeq
 
 }
