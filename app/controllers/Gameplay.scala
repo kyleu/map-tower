@@ -1,7 +1,5 @@
 package controllers
 
-import com.codahale.jerkson.Json.generate
-
 import controllers.forms.Forms
 import maptower.data.{ osmDao, mapDao }
 import maptower.game.{ Room, GameType }
@@ -20,7 +18,8 @@ object Gameplay extends Controller {
     val osmNodeIds = osmNodes map (_.osmId) toArray
     val osmWays = osmDao.waysContainingNodes(osmNodeIds) toSeq
     val osmRelations = osmDao.relationsContainingNodes(osmNodeIds) toSeq
-    val rsp = generate(Map("nodes" -> osmNodes, "ways" -> osmWays, "relations" -> osmRelations))
+    val result = Map("nodes" -> osmNodes, "ways" -> osmWays, "relations" -> osmRelations)
+    val rsp = "" //TODO generate(result)
     Ok(rsp).as("application/json")
   }
 
@@ -31,7 +30,8 @@ object Gameplay extends Controller {
 
     val nodes = mapDao.nodesWithin(bounds) toSeq
     val ways = mapDao.waysIntersecting(bounds, true) toSeq
-    val rsp = generate(Map("nodes" -> nodes, "ways" -> ways))
+    val result = Map("nodes" -> nodes, "ways" -> ways)
+    val rsp = "" //TODO generate(result)
     Ok(rsp).as("application/json")
   }
 

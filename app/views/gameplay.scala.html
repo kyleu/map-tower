@@ -1,12 +1,10 @@
 @(gameType:maptower.game.GameType, username: String)(implicit request: RequestHeader)
 
-@import com.codahale.jerkson.Json._
-
 @headerContent() = {
   <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/leaflet.css")">
 
   <script type="text/javascript">
-    window.gameType = @Html(generate(gameType));
+    window.gameType = @Html("TODO generate(gameType)");
     window.gameType.websocketUrl = "@routes.Gameplay.events(gameType.code, username).webSocketURL()";
   </script>
 
