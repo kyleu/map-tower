@@ -18,5 +18,6 @@ object JsonReads {
   implicit val readsOsmRelation = Json.reads[OsmRelation]
   implicit val readsOsmWay = Json.reads[OsmWay]
 
-  //  implicit val readsGameEvent = Json.reads[GameEvent]
+  implicit val readsGameType = Json.reads[GameType]
+  implicit val readsGameEvent = Json.reads[GameEvent]
 }

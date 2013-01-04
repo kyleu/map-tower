@@ -2,10 +2,10 @@ package maptower.util
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
 import maptower.game._
 import maptower.map.osm._
 import maptower.map._
+import maptower.game.GameType
 
 object JsonWrites {
   implicit val writesPoint = Json.writes[Point]
@@ -18,5 +18,6 @@ object JsonWrites {
   implicit val writesOsmRelation = Json.writes[OsmRelation]
   implicit val writesOsmWay = Json.writes[OsmWay]
 
-  //  implicit val writesGameEvent = Json.writes[GameEvent]
+  implicit val writesGameType = Json.writes[GameType]
+  implicit val writesGameEvent = Json.writes[GameEvent]
 }

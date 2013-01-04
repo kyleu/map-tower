@@ -9,7 +9,7 @@
     <a href="@routes.Datastore.wipe(db)">Wipe</a><br/>
 
     @if(db == "osm") {
-      @for(gt <- maptower.game.GameType.types.values) { 
+      @for(gt <- maptower.game.GameTypeHelper.types.values) { 
         <a href="@routes.Datastore.loadOsm(gt.code)">Load @gt.name</a><br/>
       }
     }

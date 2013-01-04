@@ -10,6 +10,9 @@ import play.api.libs.concurrent._
 import akka.util.Timeout
 import akka.pattern.ask
 
+import play.api.libs.json.Json
+import maptower.util.JsonWrites._
+
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -82,7 +85,7 @@ class Room extends Actor {
 
   def notifyAll(kind: String, user: Option[String], data: String) {
     val evt = new GameEvent(kind, user, data, Some(members.toList))
-    val msg = evt.toString() //TODO generate(evt)
+    val msg = Json.toJson(evt).toString
     println("Sending: " + msg)
     chatChannel.push(msg)
   }
