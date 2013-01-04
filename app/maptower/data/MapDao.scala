@@ -15,8 +15,8 @@ class MapDao(dbName: String, enableTrace: Boolean) extends BaseDao(dbName, enabl
     mongoDb("way").createIndex(Obj("points" -> "2d"))
   }
 
-  def nodesNear(p: Point) = mongoDb("node") find (Obj("loc" -> near(p))) map (Node(_))
-  def nodesWithin(b: Bounds) = mongoDb("node") find (Obj("loc" -> within(b))) map (Node(_))
+  def nodesNear(p: Point) = mongoDb("node") find (Obj("loc" -> near(p))) map (NodeHelper(_))
+  def nodesWithin(b: Bounds) = mongoDb("node") find (Obj("loc" -> within(b))) map (NodeHelper(_))
 
-  def waysIntersecting(b: Bounds, trimmed: Boolean = false) = mongoDb("way") find (Obj("points" -> within(b))) flatMap (p => if (trimmed) Way(p).trimmed(b) else List(Way(p)))
+  def waysIntersecting(b: Bounds, trimmed: Boolean = false) = mongoDb("way") find (Obj("points" -> within(b))) flatMap (p => if (trimmed) WayHelper(p).trimmed(b) else List(WayHelper(p)))
 }

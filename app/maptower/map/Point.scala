@@ -3,10 +3,7 @@ package maptower.map
 import com.mongodb.BasicDBList
 import com.mongodb.casbah.commons.MongoDBList
 
-object Point {
-  val empty = new Point(Double.MinValue, Double.MinValue)
-  val center = new Point(0.0, 0.0)
-
+object PointHelper {
   def apply(objList: BasicDBList): Point = {
     new Point(objList.get(0).asInstanceOf[Double], objList.get(1).asInstanceOf[Double])
   }

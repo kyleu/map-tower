@@ -10,7 +10,7 @@ object OsmNode {
 
   def apply(obj: Obj): OsmNode = {
     var loc = obj.as[MongoDBList]("loc")
-    new OsmNode(obj.as[Int]("osmId"), Point(loc), OsmTags(obj))
+    new OsmNode(obj.as[Int]("osmId"), PointHelper(loc), OsmTags(obj))
   }
 }
 

@@ -19,6 +19,6 @@ object ApplicationBuild extends Build {
   println("Reloadinating!")
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-
+    //scalacOptions += "-usejavacp"
   )
 }

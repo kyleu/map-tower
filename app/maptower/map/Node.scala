@@ -4,12 +4,11 @@ import com.mongodb.casbah.commons.{ MongoDBObject => Obj, MongoDBList => ObjList
 import com.mongodb.{ BasicDBList, BasicDBObject }
 import com.mongodb.casbah.Imports._
 
-object Node {
-  val empty = new Node(0, "The Middle of Nowhere", "unknown", "unknown", new Point(0, 0))
-
+object NodeHelper {
   def apply(obj: Obj): Node = {
-    var loc = obj.as[MongoDBList]("loc")
-    new Node(obj.as[Int]("osmId"), obj.as[String]("name"), obj.as[String]("category"), obj.as[String]("subcategory"), Point(loc), obj.as[String]("note"))
+    val loc = obj.as[MongoDBList]("loc")
+    val p = PointHelper(loc)
+    new Node(obj.as[Int]("osmId"), obj.as[String]("name"), obj.as[String]("category"), obj.as[String]("subcategory"), p, obj.as[String]("note"))
   }
 }
 

@@ -2,22 +2,7 @@ package maptower.game
 
 import play.api.libs.iteratee.Enumerator
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-case class GameEvent(kind: String, user: Option[String], data: Any, members: Option[List[String]])
-
-object Foo {
-  import play.api.libs.json._
-  import play.api.libs.functional.syntax._
-
-  case class Person(name: String, age: Int, lovesChocolate: Boolean)
-
-  implicit val personReads = Json.reads[Person]
-
-  //implicit val readsGameEvent = Json.reads[GameEvent]
-  //implicit val writesGameEvent = Json.writes[GameEvent]
-}
+case class GameEvent(kind: String, user: Option[String], data: String, members: Option[List[String]])
 
 case class Join(username: String)
 case class Quit(username: String)

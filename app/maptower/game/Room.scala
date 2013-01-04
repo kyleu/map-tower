@@ -48,17 +48,17 @@ object Room {
 }
 
 class Room extends Actor {
-  var members = Map.empty[String, PushEnumerator[String]]
+  var members = Set.empty[String]
+  val (chatEnumerator, chatChannel) = Concurrent.broadcast[String]
 
   def receive = {
     case Join(username) => {
-      // Create an Enumerator to write to this socket
-      val channel = Enumerator.imperative[String](onStart = () => self ! NotifyJoin(username))
       if (members.contains(username)) {
-        sender ! CannotConnect("This username is already in use.")
+        sender ! CannotConnect("This username is already used")
       } else {
-        members = members + (username -> channel)
-        sender ! Connected(channel)
+        members = members + username
+        sender ! Connected(chatEnumerator)
+        self ! NotifyJoin(username)
       }
     }
 
@@ -71,7 +71,7 @@ class Room extends Actor {
     }
 
     case msg: Spawn => {
-      notifyAll("spawn", Some(msg.mob), msg)
+      notifyAll("spawn", Some(msg.mob), msg.toString) //TODO FUCK!
     }
 
     case Quit(username) => {
@@ -80,12 +80,10 @@ class Room extends Actor {
     }
   }
 
-  def notifyAll(kind: String, user: Option[String], data: Any) {
-    val evt = new GameEvent(kind, user, data, Some(members.keySet.toList))
+  def notifyAll(kind: String, user: Option[String], data: String) {
+    val evt = new GameEvent(kind, user, data, Some(members.toList))
     val msg = evt.toString() //TODO generate(evt)
     println("Sending: " + msg)
-    members.foreach {
-      case (_, channel) => channel.push(msg)
-    }
+    chatChannel.push(msg)
   }
 }
