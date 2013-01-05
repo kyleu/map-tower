@@ -25,6 +25,7 @@ object Room {
     Robot(roomActor)
     roomActor
   }
+
   def join(username: String): scala.concurrent.Future[(Iteratee[String, _], Enumerator[String])] = {
     (default ? Join(username)).map {
       case Connected(enumerator) =>

@@ -8,7 +8,9 @@ import play.api.libs.concurrent.Akka
 import play.api.libs.iteratee.Iteratee
 import play.api.Logger
 import java.io.File
-import java.util.Random
+
+import scala.concurrent.duration._
+import play.api.libs.concurrent.Execution.Implicits._
 
 object Robot {
   lazy val mobs = {
@@ -19,32 +21,32 @@ object Robot {
   def apply(gameRoom: ActorRef) {
     val loggerIteratee = Iteratee.foreach[String](event => Logger("robot").info(event))
 
-    //    implicit val timeout = Timeout(1 second)
-    //
-    //    gameRoom ? (Join("GLaDOS")) map {
-    //      case Connected(robotChannel) =>
-    //        // Apply this Enumerator on the logger.
-    //        robotChannel |>> loggerIteratee
-    //    }
-    //
-    //    // Make the robot talk every 30 seconds
-    //    Akka.system.scheduler.schedule(
-    //      30 seconds,
-    //      30 seconds,
-    //      gameRoom,
-    //      Talk("GLaDOS", "I'm still alive")
-    //    )
-    //
-    //    // Make the robot spawn every 5 seconds
-    //    Akka.system.scheduler.schedule(
-    //      5 seconds,
-    //      5 seconds,
-    //      gameRoom,
-    //      Spawn(mobName, 0.0, 0.0)
-    //    )
+    implicit val timeout = Timeout(1.seconds)
+
+    gameRoom ? (Join("GLaDOS")) map {
+      case Connected(robotChannel) =>
+        // Apply this Enumerator on the logger.
+        robotChannel |>> loggerIteratee
+    }
+
+    // Make the robot talk every 30 seconds
+    Akka.system.scheduler.schedule(
+      30 seconds,
+      30 seconds,
+      gameRoom,
+      Talk("GLaDOS", "I'm still alive")
+    )
+
+    // Make the robot spawn every 5 seconds
+    Akka.system.scheduler.schedule(
+      5 seconds,
+      5 seconds,
+      gameRoom,
+      Spawn(mobName, 0.0, 0.0)
+    )
   }
 
   def mobName = {
-    mobs(new Random().nextInt(mobs.length))
+    mobs(new java.util.Random().nextInt(mobs.length))
   }
 }
