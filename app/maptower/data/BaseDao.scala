@@ -28,7 +28,7 @@ abstract class BaseDao(dbName: String, enableTrace: Boolean) {
   }
 
   def getInfo = {
-    val collections = mongoDb.collectionNames.toArray[String] map (name => (name, mongoDb(name).count.toInt))
+    val collections = mongoDb.collectionNames.toArray[String] map (name => (name, mongoDb(name).count(Obj()).toInt))
     collections.toMap
   }
 
