@@ -83,10 +83,7 @@ define([ "game/Game", "Theme" ], function(Game, Theme) {
   var handleReturnKey = function(e) {
     if(e.charCode == 13 || e.keyCode == 13) {
       e.preventDefault();
-      Game.send({
-        type: "Chat",
-        chat: $("#talk").val()
-      })
+      Game.send($("#talk").val())
       $("#talk").val('');
     }
   };

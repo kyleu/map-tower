@@ -2,19 +2,17 @@ package maptower.game
 
 import akka.actor._
 import scala.concurrent.duration._
-
 import play.api._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent._
-
 import akka.util.Timeout
 import akka.pattern.ask
-
 import play.api.libs.json.Json
 import maptower.util.JsonWrites._
-
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json.JsValue
+import play.api.libs.json.JsString
 
 object Room {
   implicit val timeout = Timeout(1.seconds)
@@ -67,24 +65,24 @@ class Room extends Actor {
     }
 
     case NotifyJoin(username) => {
-      notifyAll("join", Some(username), "has joined the game.")
+      notifyAll("join", Some(username), JsString("has joined the game."))
     }
 
     case Talk(username, text) => {
-      notifyAll("talk", Some(username), text)
+      notifyAll("talk", Some(username), JsString(text))
     }
 
     case msg: Spawn => {
-      notifyAll("spawn", Some(msg.mob), msg.toString) //TODO FUCK!
+      notifyAll("spawn", Some(msg.mob), Json.toJson(msg)) //TODO FUCK!
     }
 
     case Quit(username) => {
       members = members - username
-      notifyAll("quit", Some(username), "has left the game.")
+      notifyAll("quit", Some(username), JsString("has left the game."))
     }
   }
 
-  def notifyAll(kind: String, user: Option[String], data: String) {
+  def notifyAll(kind: String, user: Option[String], data: JsValue) {
     val evt = new GameEvent(kind, user, data, Some(members.toList))
     val msg = Json.toJson(evt).toString
     println("Sending: " + msg)

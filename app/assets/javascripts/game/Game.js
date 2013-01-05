@@ -54,8 +54,7 @@ define([ "Class", "game/Network", "game/Point", "game/Node", "game/Way", "game/M
     updateGame: function(msg) {
       var ret = true;
       if(msg.kind == "spawn") {
-        console.log("Spawning.");
-        //console.log("Spawning " + msg.user + " at " + msg.data.x + ", " + msg.data.y + ".");
+        console.log("Spawning " + msg.user + " at " + msg.data.x + ", " + msg.data.y + ".");
         //$("body").append("<img class=\"mob\" src=\"/assets/images/mob/slime.png\" />")
       }
       return ret;

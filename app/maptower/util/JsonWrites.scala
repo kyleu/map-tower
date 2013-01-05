@@ -20,4 +20,5 @@ object JsonWrites {
 
   implicit val writesGameType = Json.writes[GameType]
   implicit val writesGameEvent = Json.writes[GameEvent]
+  implicit val writesSpawn = Json.writes[Spawn]
 }

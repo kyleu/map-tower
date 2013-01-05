@@ -13,11 +13,13 @@ define([ "Class" ], function(Class) {
 
     sendMessage: function(obj) {
       console.log("Sending", obj);
-      this.eventSocket.send(JSON.stringify(obj));
+      this.eventSocket.send(obj);
     },
 
     receiveEvent: function(self) {
       return function(event) {
+        console.log(event);
+        //var data = JSON.parse(event.data);
         var data = JSON.parse(event.data);
 
         if (data.error) {

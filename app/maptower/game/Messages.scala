@@ -1,8 +1,9 @@
 package maptower.game
 
 import play.api.libs.iteratee.Enumerator
+import play.api.libs.json.JsValue
 
-case class GameEvent(kind: String, user: Option[String], data: String, members: Option[List[String]])
+case class GameEvent(kind: String, user: Option[String], data: JsValue, members: Option[List[String]])
 
 case class Join(username: String)
 case class Quit(username: String)
